@@ -22,7 +22,8 @@ public class ProgressionUpdateToast implements Toast {
         manager.blit(0, 0, 0, 0, 160, 32);
         manager.getGame().textRenderer.draw(I18n.translate(notebook ? "toast.arcanemagic.notebook_update" : "toast.arcanemagic.parchment_update"), 30.0F, 12.0F, 0x978b52);
 
-        GuiLighting.enableForItems();
+        DiffuseLighting.enableGuiDepthLighting();
+DiffuseLighting.enable();
         manager.getGame().getItemRenderer().renderGuiItem(null, new ItemStack(notebook ? ModRegistry.NOTEBOOK : ModRegistry.WRITTEN_PARCHMENT), 8, 8);
         return time >= 5000L ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
 

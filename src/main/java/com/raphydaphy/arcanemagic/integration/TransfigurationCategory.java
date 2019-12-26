@@ -51,7 +51,8 @@ public class TransfigurationCategory implements RecipeCategory<TransfigurationDi
             @Override
             public void render(int mouseX, int mouseY, float partialTicks) {
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+                DiffuseLighting.disableGuiDepthLighting();
+DiffuseLighting.disable();
                 MinecraftClient.getInstance().getTextureManager().bindTexture(DISPLAY_TEXTURE);
                 blit(startPoint.x, startPoint.y, 0, 0, 124, 54);
                 MinecraftClient.getInstance().getTextureManager().bindTexture(SOUL_METER_TEXTURE);

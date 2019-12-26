@@ -127,7 +127,7 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
             }
 
             double pixel = 1d / 16d;
-            GlStateManager.translated(renderX, renderY, renderZ);
+            RenderSystem.translated(renderX, renderY, renderZ);
 
             if (connectionNorth.hasConnection() || connectionSouth.hasConnection() || renderCenter) {
                 builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
@@ -154,8 +154,8 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                 tess.draw();
             }
 
-            GlStateManager.rotated(90, 0, 1, 0);
-            GlStateManager.translated(-1, 0, 0);
+            RenderSystem.rotatef(90.0F, 0.0F, 1.0F, 1.0F);
+            RenderSystem.translated(-1, 0, 0);
 
             if (connectionEast.hasConnection() || connectionWest.hasConnection()) {
                 builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
@@ -182,8 +182,8 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                 tess.draw();
             }
 
-            GlStateManager.rotated(90, 1, 0, 0);
-            GlStateManager.translated(0, 0, -1);
+            RenderSystem.rotatef(90, 1, 0, 0);
+            RenderSystem.translated(0, 0, -1);
 
             if (connectionUp.hasConnection() || connectionDown.hasConnection()) {
                 builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);

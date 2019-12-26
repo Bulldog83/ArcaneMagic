@@ -23,11 +23,11 @@ public class ClientEvents {
                 usingWand = true;
                 if (!prevUsingScepter) {
                     cachedPitch = player.pitch;
-                    cachedYaw = player.getY()aw;
+                    cachedYaw = player.yaw;
                 }
 
                 player.pitch = cachedPitch;
-                player.getY()aw = cachedYaw;
+                player.yaw = cachedYaw;
             }
         }
 

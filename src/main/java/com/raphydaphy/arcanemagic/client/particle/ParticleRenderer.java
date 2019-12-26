@@ -1,6 +1,8 @@
 package com.raphydaphy.arcanemagic.client.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -84,7 +86,7 @@ public class ParticleRenderer {
             }
             tess.draw();
 
-            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE.value);
             buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_LMAP);
             for (Particle particle : particles) {
                 if (particle != null) {
@@ -107,7 +109,7 @@ public class ParticleRenderer {
             }
             tess.draw();
 
-            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE.value);
             buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_LMAP);
             for (Particle particle : particles) {
                 if (particle != null) {

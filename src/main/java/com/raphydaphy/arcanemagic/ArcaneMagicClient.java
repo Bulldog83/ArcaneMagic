@@ -20,7 +20,9 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceType;
@@ -29,14 +31,14 @@ import net.minecraft.util.Identifier;
 public class ArcaneMagicClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        BlockEntityRendererRegistry.INSTANCE.register(AltarBlockEntity.class, new AltarRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(AnalyzerBlockEntity.class, new AnalyzerRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(CrystalInfuserBlockEntity.class, new CrystalInfuserRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(MixerBlockEntity.class, new MixerRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(PipeBlockEntity.class, new PipeRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(SmelterBlockEntity.class, new SmelterRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(TransfigurationTableBlockEntity.class, new TransfigurationTableRenderer());
-        BlockEntityRendererRegistry.INSTANCE.register(PumpBlockEntity.class, new PumpRenderer());
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.ALTAR_TE, AltarRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.ANALYZER_TE, AnalyzerRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.CRYSTAL_INFUSER_TE, CrystalInfuserRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.MIXER_TE, MixerRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.PIPE_TE, PipeRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.SMELTER_TE, SmelterRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.TRANSFIGURATION_TABLE_TE, TransfigurationTableRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModRegistry.PUMP_TE, PumpRenderer::new);
 
         ClientSidePacketRegistry.INSTANCE.register(ClientBlockEntityUpdatePacket.ID, new ClientBlockEntityUpdatePacket.Handler());
         ClientSidePacketRegistry.INSTANCE.register(ProgressionUpdateToastPacket.ID, new ProgressionUpdateToastPacket.Handler());

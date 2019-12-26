@@ -121,7 +121,7 @@ public abstract class ScreenMixin extends AbstractParentElement {
 
             this.blitOffset = 0;
             this.itemRenderer.zOffset = 0.0F;
-            GlStateManager.enableLighting();
+            RenderSystem.enableLighting();
             GlStateManager.enableDepthTest();
             DiffuseLighting.enable();
                     DiffuseLighting.enableGuiDepthLighting();

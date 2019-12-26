@@ -77,7 +77,8 @@ public class WorldRendererMixin {
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+        DiffuseLighting.disableGuiDepthLighting();
+DiffuseLighting.disable();
         float[] floats_1 = this.world.dimension.getBackgroundColor(this.world.getSkyAngle(tickDelta), tickDelta);
         float float_11 = 0;
         int int_2;
@@ -86,9 +87,9 @@ public class WorldRendererMixin {
             GlStateManager.disableTexture();
             GlStateManager.shadeModel(7425);
             RenderSystem.pushMatrix();
-            GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotatef(MathHelper.sin(this.world.getSkyAngleRadians(tickDelta)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
-            GlStateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+            RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            RenderSystem.rotatef(MathHelper.sin(this.world.getSkyAngleRadians(tickDelta)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
+            RenderSystem.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
             float_11 = floats_1[0];
             float_12 = floats_1[1];
             float float_7 = floats_1[2];
@@ -107,13 +108,13 @@ public class WorldRendererMixin {
         }
 
         GlStateManager.enableTexture();
-        GlStateManager.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE.value, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderSystem.pushMatrix();
 
         float_11 = 1.0F - this.world.getRainGradient(tickDelta);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, float_11);
-        GlStateManager.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotatef(this.world.getSkyAngle(tickDelta) * 360.0F, 1.0F, 0.0F, 0.0F);
+        RenderSystem.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+        RenderSystem.rotatef(this.world.getSkyAngle(tickDelta) * 360.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.disableTexture();
         float float_17 = this.world.getStarsBrightness(tickDelta) * float_11;
         if (float_17 > 0.0F) {

@@ -1,39 +1,44 @@
 package com.raphydaphy.arcanemagic.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.block.entity.AnalyzerBlockEntity;
 import com.raphydaphy.arcanemagic.util.ArcaneMagicUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 public class AnalyzerRenderer extends BlockEntityRenderer<AnalyzerBlockEntity> {
-    public void render(AnalyzerBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
-        super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
+    public AnalyzerRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+		super(blockEntityRenderDispatcher);
+	}
 
+	@Override
+    public void render(AnalyzerBlockEntity entity, float partialTicks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (entity != null) {
             ItemStack stack = entity.getInvStack(0);
             float ticks = ArcaneMagicUtils.lerp(entity.ticks - 1, entity.ticks, partialTicks);
 
             if (!stack.isEmpty()) {
-                RenderSystem.pushMatrix();
+            	matrices.push();
 
                 DiffuseLighting.enable();
                 DiffuseLighting.enableGuiDepthLighting();
-                GlStateManager.enableLighting();
+                RenderSystem.enableLighting();
                 RenderSystem.disableRescaleNormal();
-                GlStateManager.translated(renderX + .5, renderY + 0.45, renderZ + .5);
-                if (MinecraftClient.getInstance().getItemRenderer().getModel(stack).hasDepthInGui()) {
-                    GlStateManager.translated(0, -0.06, 0);
+                matrices.translate(0.5, 0.45, 0.5);
+                if (MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, entity.getWorld(), null).hasDepthInGui()) {
+                    RenderSystem.translated(0, -0.06, 0);
                 }
-                GlStateManager.rotated(2 * ticks, 0, 1, 0);
-                GlStateManager.scaled(0.7, 0.7, 0.7);
-                MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND);
+                RenderSystem.rotatef(2 * ticks, 0, 1, 0);
+                RenderSystem.scaled(0.7, 0.7, 0.7);
+                MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
 
-                RenderSystem.popMatrix();
+                matrices.pop();
             }
         }
     }

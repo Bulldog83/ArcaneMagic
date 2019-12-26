@@ -1,6 +1,8 @@
 package com.raphydaphy.arcanemagic.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -8,7 +10,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -44,7 +46,7 @@ public class RenderUtils {
 
     public static int drawCustomSizedSplitString(int x, int y, double scale, int width, int color, boolean verticallyCentered, boolean horizontallyCentered, String unlocalizedText, Object... keys) {
         RenderSystem.pushMatrix();
-        GlStateManager.scaled(scale, scale, scale);
+        RenderSystem.scaled(scale, scale, scale);
         int height = RenderUtils.drawSplitString(MinecraftClient.getInstance().textRenderer, I18n.translate(unlocalizedText, keys),
                 (int) (x / scale), (int) (y / scale), (int) (width / scale), color, verticallyCentered, horizontallyCentered);
         RenderSystem.popMatrix();
@@ -54,14 +56,14 @@ public class RenderUtils {
     @Environment(EnvType.CLIENT)
     public static void rotateTo(Direction dir) {
         if (dir == Direction.EAST) {
-            GlStateManager.rotated(-90, 0, 1, 0);
-            GlStateManager.translated(0, 0, -1);
+            RenderSystem.rotatef(-90, 0, 1, 0);
+            RenderSystem.translated(0, 0, -1);
         } else if (dir == Direction.SOUTH) {
-            GlStateManager.rotated(-180, 0, 1, 0);
-            GlStateManager.translated(-1, 0, -1);
+            RenderSystem.rotatef(-180, 0, 1, 0);
+            RenderSystem.translated(-1, 0, -1);
         } else if (dir == Direction.WEST) {
-            GlStateManager.rotated(-270, 0, 1, 0);
-            GlStateManager.translated(-1, 0, 0);
+            RenderSystem.rotatef(-270, 0, 1, 0);
+            RenderSystem.translated(-1, 0, 0);
         }
     }
 
@@ -151,7 +153,8 @@ public class RenderUtils {
 
             RenderSystem.pushMatrix();
 
-            GuiLighting.enableForItems();
+            DiffuseLighting.enableGuiDepthLighting();
+DiffuseLighting.enable();
 
             boolean thin = recipe.fits(1, 3);
 
@@ -159,7 +162,7 @@ public class RenderUtils {
                 for (int inputY = 0; inputY < 3; inputY++) {
                     int slot = thin ? inputY : (inputX + (3 * inputY));
                     if (slot < ingredients.size()) {
-                        ItemStack[] stackArray = ingredients.get(slot).getStackArray();
+                        ItemStack[] stackArray = ingredients.get(slot).getMatchingStacksClient();
                         if (stackArray.length > 0) {
                             int id = (int) (client.world.getTime() / 30) % stackArray.length;
                             if (!stackArray[id].isEmpty()) {
@@ -175,7 +178,8 @@ public class RenderUtils {
             RenderSystem.popMatrix();
         }
 
-        DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+        DiffuseLighting.disableGuiDepthLighting();
+        DiffuseLighting.disable();
 
         RenderSystem.popMatrix();
 
@@ -188,9 +192,11 @@ public class RenderUtils {
         box(x, y, 24, 24, 2, 0xff422c0e, -1);
 
         // Draw the output item
-        GuiLighting.enableForItems();
+        DiffuseLighting.enableGuiDepthLighting();
+DiffuseLighting.enable();
         MinecraftClient.getInstance().getItemRenderer().renderGuiItem(recipe.getOutput(), x + 5, y + 5);
-        DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+        DiffuseLighting.disableGuiDepthLighting();
+        DiffuseLighting.disable();
         RenderSystem.popMatrix();
     }
 
@@ -202,7 +208,7 @@ public class RenderUtils {
             for (int inputY = 0; inputY < 3; inputY++) {
                 int slot = thin ? inputY : (inputX + (3 * inputY));
                 if (slot < ingredients.size()) {
-                    ItemStack[] stackArray = ingredients.get(slot).getStackArray();
+                    ItemStack[] stackArray = ingredients.get(slot).getMatchingStacksClient();
                     if (stackArray.length != 0) {
                         int id = (int) (MinecraftClient.getInstance().world.getTime() / 30) % stackArray.length;
                         if (!stackArray[id].isEmpty()) {
@@ -237,10 +243,12 @@ public class RenderUtils {
         box(x, y, 24, 24, 2, color, -1);
 
         if (!item.isEmpty()) {
-            GuiLighting.enableForItems();
+            DiffuseLighting.enableGuiDepthLighting();
+DiffuseLighting.enable();
             client.getItemRenderer().renderGuiItem(item, x + 5, y + 5);
             client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, item, x + 5, y + 5, null);
-            DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
+            DiffuseLighting.disable();
 
             if (tooltip != null && !tooltip.isEmpty() && mouseX >= x + 5 && mouseY >= y + 5 && mouseX <= x + 21 && mouseY <= y + 21) {
                 // Actually draw the tooltip
@@ -263,8 +271,9 @@ public class RenderUtils {
         for (Map.Entry<Ingredient, Boolean> item : items.entrySet()) {
             box(x + i * 35, y, 24, 24, 2, 0xff422c0e, items.get(item.getKey()) ? 0x8010ce40 : 0x80e80d0d);
 
-            GuiLighting.enableForItems();
-            ItemStack[] stackArray = item.getKey().getStackArray();
+            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
+            ItemStack[] stackArray = item.getKey().getMatchingStacksClient();
             if (stackArray.length != 0) {
                 int id = (int) (client.world.getTime() / 30) % stackArray.length;
                 if (!stackArray[id].isEmpty()) {
@@ -272,13 +281,14 @@ public class RenderUtils {
                     client.getItemRenderer().renderGuiItem(stackArray[id], x + 5 + i * 35, y + 4);
                 }
             }
-            DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
+            DiffuseLighting.disable();
             i++;
         }
 
         i = 0;
         for (Map.Entry<Ingredient, Boolean> item : items.entrySet()) {
-            ItemStack[] stackArray = item.getKey().getStackArray();
+            ItemStack[] stackArray = item.getKey().getMatchingStacksClient();
             if (stackArray.length != 0) {
                 int id = (int) (MinecraftClient.getInstance().world.getTime() / 30) % stackArray.length;
                 if (!stackArray[id].isEmpty()) {
@@ -330,16 +340,16 @@ public class RenderUtils {
     }
 
     public static class TextureBounds {
-        double u;
-        double v;
-        double maxU;
-        double maxV;
+        float u;
+        float v;
+        float maxU;
+        float maxV;
 
-        public TextureBounds(double u, double v, double maxU, double maxV) {
+        public TextureBounds(float u, float v, float maxU, float maxV) {
             this(u, v, maxU, maxV, 16, 16);
         }
 
-        public TextureBounds(double u, double v, double maxU, double maxV, double textureWidth, double textureHeight) {
+        public TextureBounds(float u, float v, float maxU, float maxV, float textureWidth, float textureHeight) {
             this.u = u / textureWidth;
             this.v = v / textureHeight;
             this.maxU = maxU / textureWidth;

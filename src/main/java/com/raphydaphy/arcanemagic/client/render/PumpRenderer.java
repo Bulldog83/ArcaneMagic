@@ -42,7 +42,7 @@ public class PumpRenderer extends BlockEntityRenderer<PumpBlockEntity> {
 
                 if (state.getBlock() instanceof PumpBlock) {
                     RenderSystem.pushMatrix();
-                    GlStateManager.translated(renderX, renderY, renderZ);
+                    RenderSystem.translated(renderX, renderY, renderZ);
                     MinecraftClient.getInstance().getTextureManager().bindTexture(tex);
                     RenderUtils.rotateTo(state.get(PumpBlock.FACING));
 

@@ -18,7 +18,7 @@ public class TransfigurationTableRenderer extends BlockEntityRenderer<Transfigur
         super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
 
         RenderSystem.pushMatrix();
-        GlStateManager.translated(renderX, renderY, renderZ);
+        RenderSystem.translated(renderX, renderY, renderZ);
         RenderSystem.disableRescaleNormal();
 
 
@@ -38,17 +38,17 @@ public class TransfigurationTableRenderer extends BlockEntityRenderer<Transfigur
                         RenderSystem.pushMatrix();
                         DiffuseLighting.enable();
                         DiffuseLighting.enableGuiDepthLighting();
-                        GlStateManager.enableLighting();
-                        GlStateManager.translated(.69 - .19 * row, 0.695, .69 - .19 * col);
+                        RenderSystem.enableLighting();
+                        RenderSystem.translated(.69 - .19 * row, 0.695, .69 - .19 * col);
                         if (!MinecraftClient.getInstance().getItemRenderer().getModel(stack).hasDepthInGui()) {
-                            GlStateManager.translated(0, -0.064, 0);
-                            GlStateManager.rotated(90, 1, 0, 0);
-                            GlStateManager.rotated(180, 0, 1, 0);
+                            RenderSystem.translated(0, -0.064, 0);
+                            RenderSystem.rotatef(90, 1, 0, 0);
+                            RenderSystem.rotatef(180, 0, 1, 0);
                         } else {
-                            GlStateManager.rotated(-90, 0, 1, 0);
+                            RenderSystem.rotatef(-90, 0, 1, 0);
                         }
 
-                        GlStateManager.scaled(.14, .14, .14);
+                        RenderSystem.scaled(.14, .14, .14);
                         MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.NONE);
                         RenderSystem.popMatrix();
                     }

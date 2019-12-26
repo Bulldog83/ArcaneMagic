@@ -147,11 +147,11 @@ public class TremorTracker {
             World world = MinecraftClient.getInstance().world;
             PlayerEntity player = MinecraftClient.getInstance().player;
             float time = ArcaneMagicUtils.lerp(world.getTime() - 1, world.getTime(), MinecraftClient.getInstance().getTickDelta());
-            GlStateManager.rotated(intensity * noise1.noise1(time), 1, 0, 0);
-            GlStateManager.rotated(intensity * noise2.noise1(time), 0, 1, 0);
-            GlStateManager.rotated(intensity * noise3.noise1(time), 0, 0, 1);
+            RenderSystem.rotatef(intensity * noise1.noise1(time), 1, 0, 0);
+            RenderSystem.rotatef(intensity * noise2.noise1(time), 0, 1, 0);
+            RenderSystem.rotatef(intensity * noise3.noise1(time), 0, 0, 1);
             player.pitch += intensity * noise4.noise1(time);
-            player.getY()aw += intensity * noise5.noise1(time);
+            player.yaw += intensity * noise5.noise1(time);
         }
     }
 }

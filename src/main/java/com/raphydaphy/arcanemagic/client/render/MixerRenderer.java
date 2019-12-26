@@ -74,7 +74,8 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             GlStateManager.enableCull();
             GlStateManager.depthMask(true);
             GlStateManager.disableBlend();
-            DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
+DiffuseLighting.disable();
 
             RenderSystem.popMatrix();
             renderQueue.clear();
@@ -142,11 +143,11 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
 
                     DiffuseLighting.enable();
                     DiffuseLighting.enableGuiDepthLighting();
-                    GlStateManager.enableLighting();
+                    RenderSystem.enableLighting();
                     RenderSystem.disableRescaleNormal();
-                    GlStateManager.translated(renderX + .5, renderY + 0.35 + Math.sin((Math.PI / 180) * (ticks * 4)) / 30, renderZ + .5);
-                    GlStateManager.rotated(2 * ticks, 0, 1, 0);
-                    GlStateManager.scaled(0.7, 0.7, 0.7);
+                    RenderSystem.translated(renderX + .5, renderY + 0.35 + Math.sin((Math.PI / 180) * (ticks * 4)) / 30, renderZ + .5);
+                    RenderSystem.rotatef(2 * ticks, 0, 1, 0);
+                    RenderSystem.scaled(0.7, 0.7, 0.7);
                     MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND);
 
                     RenderSystem.popMatrix();
