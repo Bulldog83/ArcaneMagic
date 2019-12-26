@@ -132,7 +132,7 @@ public abstract class LivingEntityMixin {
                             paperStack.decrement(1);
                         }
                         if (!((PlayerEntity) attacker).giveItemStack(parchment.copy())) {
-                            ((LivingEntity) (Object) this).world.spawnEntity(new ItemEntity(((LivingEntity) (Object) this).world, attacker.x, attacker.y + 0.5, attacker.z, parchment.copy()));
+                            ((LivingEntity) (Object) this).world.spawnEntity(new ItemEntity(((LivingEntity) (Object) this).world, attacker.getX(), attacker.getY() + 0.5, attacker.getZ(), parchment.copy()));
                         }
                     }
                     if (kills != 1 || paper != -1) {

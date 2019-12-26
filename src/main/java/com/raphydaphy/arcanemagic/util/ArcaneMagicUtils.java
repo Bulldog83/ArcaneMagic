@@ -306,7 +306,7 @@ public class ArcaneMagicUtils {
         if (!world.isClient()) {
             CompoundTag updates = dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).getCompound(ArcaneMagicConstants.NOTEBOOK_UPDATES_KET);
             if (remove) {
-                if (updates.containsKey(section)) {
+                if (updates.contains(section)) {
                     updates.remove(section);
                 }
             } else {

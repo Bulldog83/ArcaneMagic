@@ -43,11 +43,11 @@ public class RenderUtils {
     }
 
     public static int drawCustomSizedSplitString(int x, int y, double scale, int width, int color, boolean verticallyCentered, boolean horizontallyCentered, String unlocalizedText, Object... keys) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlStateManager.scaled(scale, scale, scale);
         int height = RenderUtils.drawSplitString(MinecraftClient.getInstance().textRenderer, I18n.translate(unlocalizedText, keys),
                 (int) (x / scale), (int) (y / scale), (int) (width / scale), color, verticallyCentered, horizontallyCentered);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         return (int) (height * scale);
     }
 
@@ -141,7 +141,7 @@ public class RenderUtils {
 
         DefaultedList<Ingredient> ingredients = recipe.getPreviewInputs();
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         if (!recipe.getPreviewInputs().isEmpty()) {
             DrawableHelper.fill(x + 20, y - 3, x + 20 + 2, y - 3 + 73, 0xff422c0e);
@@ -149,7 +149,7 @@ public class RenderUtils {
             DrawableHelper.fill(x + 45, y - 3, x + 45 + 2, y - 3 + 73, 0xff422c0e);
             DrawableHelper.fill(x - 3, y + 45, x - 3 + 73, y + 45 + 2, 0xff422c0e);
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 
             GuiLighting.enableForItems();
 
@@ -172,17 +172,17 @@ public class RenderUtils {
                 }
             }
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
-        GuiLighting.disable();
+        DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
     }
 
     public static void drawRecipeOutput(Recipe<? extends Inventory> recipe, int x, int y) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         // Crafting Output Box
         box(x, y, 24, 24, 2, 0xff422c0e, -1);
@@ -190,8 +190,8 @@ public class RenderUtils {
         // Draw the output item
         GuiLighting.enableForItems();
         MinecraftClient.getInstance().getItemRenderer().renderGuiItem(recipe.getOutput(), x + 5, y + 5);
-        GuiLighting.disable();
-        GlStateManager.popMatrix();
+        DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
+        RenderSystem.popMatrix();
     }
 
     public static void drawRecipeTooltips(Screen screen, Recipe<? extends Inventory> recipe, int x, int y, int mouseX, int mouseY) {
@@ -219,9 +219,9 @@ public class RenderUtils {
         drawRecipeItems(recipe, x, y);
         drawRecipeOutput(recipe, x + 108, y + 21);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         drawArrow.accept(x + 78, y + 26);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         drawRecipeTooltips(screen, recipe, x, y, mouseX, mouseY);
 
@@ -231,7 +231,7 @@ public class RenderUtils {
 
     public static int drawItemInBox(Screen screen, ItemStack item, List<String> tooltip, int color, int x, int y, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlStateManager.pushTextureAttributes();
 
         box(x, y, 24, 24, 2, color, -1);
@@ -240,7 +240,7 @@ public class RenderUtils {
             GuiLighting.enableForItems();
             client.getItemRenderer().renderGuiItem(item, x + 5, y + 5);
             client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, item, x + 5, y + 5, null);
-            GuiLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
 
             if (tooltip != null && !tooltip.isEmpty() && mouseX >= x + 5 && mouseY >= y + 5 && mouseX <= x + 21 && mouseY <= y + 21) {
                 // Actually draw the tooltip
@@ -250,14 +250,14 @@ public class RenderUtils {
         }
 
         GlStateManager.popAttributes();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         return 26;
     }
 
     public static void drawRequiredItems(Screen screen, Map<Ingredient, Boolean> items, int x, int y, int mouseX, int mouseY) {
         MinecraftClient client = MinecraftClient.getInstance();
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         int i = 0;
         for (Map.Entry<Ingredient, Boolean> item : items.entrySet()) {
@@ -272,7 +272,7 @@ public class RenderUtils {
                     client.getItemRenderer().renderGuiItem(stackArray[id], x + 5 + i * 35, y + 4);
                 }
             }
-            GuiLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
             i++;
         }
 
@@ -289,18 +289,18 @@ public class RenderUtils {
             i++;
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void drawItemstackTooltip(Screen screen, ItemStack stack, int x, int y, int mouseX, int mouseY) {
         if (mouseX >= x && mouseY >= y && mouseX <= x + 16 && mouseY <= y + 16) {
             if (stack != null && !stack.isEmpty()) {
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
 
                 // Actually draw the tooltip
                 screen.renderTooltip(screen.getTooltipFromItem(stack), mouseX, mouseY);
 
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }
         }
     }

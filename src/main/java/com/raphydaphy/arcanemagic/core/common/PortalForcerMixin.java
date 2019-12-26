@@ -51,7 +51,7 @@ public class PortalForcerMixin {
             if (entity instanceof PlayerEntity) {
                 CompoundTag data = PlayerData.get((PlayerEntity)entity, ArcaneMagic.DOMAIN);
                 BlockPos enteredPos = ((PlayerEntity)entity).getSpawnPosition();
-                if (data.containsKey(ArcaneMagicConstants.ENTERED_VOID_POS_KEY)) {
+                if (data.contains(ArcaneMagicConstants.ENTERED_VOID_POS_KEY)) {
                     enteredPos = BlockPos.fromLong(data.getLong(ArcaneMagicConstants.ENTERED_VOID_POS_KEY));
                 }
                 entity.setPosition(enteredPos.getX(), enteredPos.getY(), enteredPos.getZ());

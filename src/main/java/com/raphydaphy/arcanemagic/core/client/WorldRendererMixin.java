@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.core.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.init.ModRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlBuffer;
@@ -56,12 +57,12 @@ public class WorldRendererMixin {
         float float_2 = (float) vec3d_1.x;
         float float_3 = (float) vec3d_1.y;
         float float_4 = (float) vec3d_1.z;
-        GlStateManager.color3f(float_2, float_3, float_4);
+        RenderSystem.color3f(float_2, float_3, float_4);
         Tessellator tessellator_1 = Tessellator.getInstance();
         BufferBuilder bufferBuilder_1 = tessellator_1.getBufferBuilder();
         GlStateManager.depthMask(false);
         GlStateManager.enableFog();
-        GlStateManager.color3f(float_2, float_3, float_4);
+        RenderSystem.color3f(float_2, float_3, float_4);
         if (this.vertexBufferObjectsEnabled) {
             this.field_4087.bind();
             GlStateManager.enableClientState(32884);
@@ -75,8 +76,8 @@ public class WorldRendererMixin {
         GlStateManager.disableFog();
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GuiLighting.disable();
+        GlStateManager.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
         float[] floats_1 = this.world.dimension.getBackgroundColor(this.world.getSkyAngle(tickDelta), tickDelta);
         float float_11 = 0;
         int int_2;
@@ -84,7 +85,7 @@ public class WorldRendererMixin {
         if (floats_1 != null) {
             GlStateManager.disableTexture();
             GlStateManager.shadeModel(7425);
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotatef(MathHelper.sin(this.world.getSkyAngleRadians(tickDelta)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
@@ -101,13 +102,13 @@ public class WorldRendererMixin {
             }
 
             tessellator_1.draw();
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
             GlStateManager.shadeModel(7424);
         }
 
         GlStateManager.enableTexture();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.pushMatrix();
+        GlStateManager.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.pushMatrix();
 
         float_11 = 1.0F - this.world.getRainGradient(tickDelta);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, float_11);
@@ -133,21 +134,21 @@ public class WorldRendererMixin {
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();
         GlStateManager.enableFog();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         GlStateManager.disableTexture();
-        GlStateManager.color3f(0.0F, 0.0F, 0.0F);
+        RenderSystem.color3f(0.0F, 0.0F, 0.0F);
         double cameraHeight = this.client.player.getCameraPosVec(tickDelta).y;
 
         if (this.world.dimension.method_12449()) {
-            GlStateManager.color3f(float_2 * 0.2F + 0.04F, float_3 * 0.2F + 0.04F, float_4 * 0.6F + 0.1F);
+            RenderSystem.color3f(float_2 * 0.2F + 0.04F, float_3 * 0.2F + 0.04F, float_4 * 0.6F + 0.1F);
         } else {
-            GlStateManager.color3f(float_2, float_3, float_4);
+            RenderSystem.color3f(float_2, float_3, float_4);
         }
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlStateManager.translatef(0.0F, -((float) (cameraHeight - 16.0D)), 0.0F);
         GlStateManager.callList(this.field_4067);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         GlStateManager.enableTexture();
         GlStateManager.depthMask(true);
     }

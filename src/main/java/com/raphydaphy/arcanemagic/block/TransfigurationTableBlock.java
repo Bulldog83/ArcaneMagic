@@ -21,6 +21,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -156,7 +157,6 @@ public class TransfigurationTableBlock extends OrientableBlockBase implements Bl
         }, 12));
     }
 
-    @Override
     public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
@@ -210,9 +210,8 @@ public class TransfigurationTableBlock extends OrientableBlockBase implements Bl
         }
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public RenderLayer getRenderLayer() {
+        return RenderLayer.getCutout();
     }
 
     @Override

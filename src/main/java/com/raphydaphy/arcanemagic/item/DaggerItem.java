@@ -43,7 +43,7 @@ public class DaggerItem extends SwordItem implements ICrystalEquipment {
 
     public static int activeDuration(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        if (tag != null && tag.containsKey(ArcaneMagicConstants.DAGGER_ACTIVE_CRYSTAL_KEY)) {
+        if (tag != null && tag.contains(ArcaneMagicConstants.DAGGER_ACTIVE_CRYSTAL_KEY)) {
             ArcaneMagicUtils.ForgeCrystal crystal = ArcaneMagicUtils.ForgeCrystal.getFromID(tag.getString(ArcaneMagicConstants.DAGGER_ACTIVE_CRYSTAL_KEY));
             if (crystal == ArcaneMagicUtils.ForgeCrystal.GOLD) {
                 return 5 * 20;
@@ -63,7 +63,7 @@ public class DaggerItem extends SwordItem implements ICrystalEquipment {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
         CompoundTag tag = stack.getTag();
-        if (player.isSneaking() && tag != null && tag.containsKey(ArcaneMagicConstants.DAGGER_ACTIVE_CRYSTAL_KEY)) {
+        if (player.isSneaking() && tag != null && tag.contains(ArcaneMagicConstants.DAGGER_ACTIVE_CRYSTAL_KEY)) {
             if (!player.getItemCooldownManager().isCoolingDown(ModRegistry.IRON_DAGGER) && tag.getInt(ArcaneMagicConstants.DAGGER_TIMER_KEY) <= 0) {
                 tag.putBoolean(ArcaneMagicConstants.DAGGER_IS_ACTIVE_KEY, true);
                 tag.putInt(ArcaneMagicConstants.DAGGER_TIMER_KEY, activeDuration(stack));

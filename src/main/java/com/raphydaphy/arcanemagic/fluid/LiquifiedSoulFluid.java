@@ -1,14 +1,14 @@
 package com.raphydaphy.arcanemagic.fluid;
 
 import com.raphydaphy.arcanemagic.init.ModRegistry;
-import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.block.RenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
@@ -48,8 +48,8 @@ public abstract class LiquifiedSoulFluid extends BaseFluid {
     }
 
     @Override
-    protected BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.TRANSLUCENT;
+    protected RenderLayer getRenderLayer() {
+        return RenderLayer.TRANSLUCENT;
     }
 
     @Override
@@ -84,7 +84,7 @@ public abstract class LiquifiedSoulFluid extends BaseFluid {
 
     public static class Flowing extends LiquifiedSoulFluid {
         @Override
-        protected void appendProperties(StateFactory.Builder<Fluid, FluidState> builder) {
+        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
             super.appendProperties(builder);
             builder.add(LEVEL);
         }

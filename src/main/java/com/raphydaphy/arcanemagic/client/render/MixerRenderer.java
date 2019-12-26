@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.block.entity.MixerBlockEntity;
 import com.raphydaphy.arcanemagic.util.ArcaneMagicUtils;
@@ -10,6 +11,7 @@ import io.github.prospector.silk.fluid.FluidInstance;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -48,17 +50,18 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
                 BlockPos posOne = one.entity.getPos();
                 BlockPos posTwo = two.entity.getPos();
 
-                double distanceOne = Math.abs(posOne.getX() - player.x) * Math.abs(posOne.getY() - player.y) * Math.abs(posOne.getZ() - player.z);
-                double distanceTwo = Math.abs(posTwo.getX() - player.x) * Math.abs(posTwo.getY() - player.y) * Math.abs(posTwo.getZ() - player.z);
+                double distanceOne = Math.abs(posOne.getX() - player.getX()) * Math.abs(posOne.getY() - player.getY()) * Math.abs(posOne.getZ() - player.getZ());
+                double distanceTwo = Math.abs(posTwo.getX() - player.getX()) * Math.abs(posTwo.getY() - player.getY()) * Math.abs(posTwo.getZ() - player.getZ());
 
                 return Double.compare(distanceTwo, distanceOne);
             });
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 
-            GuiLighting.enable();
+            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
             GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.enableAlphaTest();
@@ -71,9 +74,9 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             GlStateManager.enableCull();
             GlStateManager.depthMask(true);
             GlStateManager.disableBlend();
-            GuiLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();                    DiffuseLighting.disable();
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
             renderQueue.clear();
         }
     }
@@ -86,7 +89,7 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
         }
         if (water > 0) {
             Tessellator tess = Tessellator.getInstance();
-            BufferBuilder builder = tess.getBufferBuilder();
+            BufferBuilder builder = tess.getBuffer();
 
             double pixel = 1d / 16d;
 
@@ -96,7 +99,7 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             if ((world = entity.getWorld()) != null) frame = (int) ((world.getTime() / 2) % 32);
 
             MinecraftClient.getInstance().getTextureManager().bindTexture(waterTexture);
-            builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+            builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
             int waterColor = BiomeColors.getWaterColor(entity.getWorld(), entity.getPos());
             RenderUtils.renderBox(builder, renderX + pixel * 3, renderY + pixel * 1, renderZ + pixel * 3, renderX + pixel * 13, renderY + pixel * (1 + water), renderZ + pixel * 13, (waterColor >> 16 & 255), (waterColor >> 8 & 255), (waterColor & 255), 200, new RenderUtils.TextureBounds[]{
                     new RenderUtils.TextureBounds(0, frame * 16, 12, 10 + frame * 16, 16, 512),
@@ -111,19 +114,19 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
     }
 
     private void renderRing(MixerBlockEntity entity, double renderX, double renderY, double renderZ) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlStateManager.disableCull();
         Tessellator tess = Tessellator.getInstance();
-        BufferBuilder builder = tess.getBufferBuilder();
+        BufferBuilder builder = tess.getBuffer();
         double pixel = 1d / 16d;
         MinecraftClient.getInstance().getTextureManager().bindTexture(ringTexture);
-        builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+        builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
         int waterColor = BiomeColors.getWaterColor(entity.getWorld(), entity.getPos());
         RenderUtils.renderBox(builder, renderX + pixel * 4, renderY + pixel * 14, renderZ + pixel * 4,
                 renderX + pixel * 12, renderY + 1, renderZ + pixel * 12, (waterColor >> 16 & 255), (waterColor >> 8 & 255), (waterColor & 255), 255, ring, new int[]{1, 1, 1, 1, 1, 1});
         tess.draw();
         GlStateManager.enableCull();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void render(MixerBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
@@ -135,17 +138,18 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
                 ItemStack stack = entity.getInvStack(0);
                 float ticks = ArcaneMagicUtils.lerp(entity.ticks - 1, entity.ticks, partialTicks);
                 if (!stack.isEmpty()) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
 
-                    GuiLighting.enable();
+                    DiffuseLighting.enable();
+                    DiffuseLighting.enableGuiDepthLighting();
                     GlStateManager.enableLighting();
-                    GlStateManager.disableRescaleNormal();
+                    RenderSystem.disableRescaleNormal();
                     GlStateManager.translated(renderX + .5, renderY + 0.35 + Math.sin((Math.PI / 180) * (ticks * 4)) / 30, renderZ + .5);
                     GlStateManager.rotated(2 * ticks, 0, 1, 0);
                     GlStateManager.scaled(0.7, 0.7, 0.7);
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.GROUND);
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND);
 
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
             } else {
                 renderQueue.add(new MixerRenderInstance(entity, renderX, renderY, renderZ));

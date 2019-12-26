@@ -27,7 +27,7 @@ public class NotebookItem extends Item {
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if (!world.isClient) {
             CompoundTag tag = stack.getOrCreateTag();
-            if (!tag.containsKey(ArcaneMagicConstants.NOTEBOOK_SECTION_KEY)) {
+            if (!tag.contains(ArcaneMagicConstants.NOTEBOOK_SECTION_KEY)) {
                 tag.putString(ArcaneMagicConstants.NOTEBOOK_SECTION_KEY, NotebookSectionRegistry.CONTENTS.getID().toString());
                 tag.putInt(ArcaneMagicConstants.NOTEBOOK_PAGE_KEY, 0);
             }

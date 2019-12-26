@@ -1,11 +1,13 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.block.TransfigurationTableBlock;
 import com.raphydaphy.arcanemagic.block.entity.TransfigurationTableBlockEntity;
 import com.raphydaphy.arcanemagic.util.RenderUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -15,9 +17,9 @@ public class TransfigurationTableRenderer extends BlockEntityRenderer<Transfigur
     public void render(TransfigurationTableBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
         super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlStateManager.translated(renderX, renderY, renderZ);
-        GlStateManager.disableRescaleNormal();
+        RenderSystem.disableRescaleNormal();
 
 
         if (entity != null && entity.getWorld() != null) {
@@ -33,8 +35,9 @@ public class TransfigurationTableRenderer extends BlockEntityRenderer<Transfigur
                         int row = slot % 3;
                         int col = slot / 3;
 
-                        GlStateManager.pushMatrix();
-                        GuiLighting.enable();
+                        RenderSystem.pushMatrix();
+                        DiffuseLighting.enable();
+                        DiffuseLighting.enableGuiDepthLighting();
                         GlStateManager.enableLighting();
                         GlStateManager.translated(.69 - .19 * row, 0.695, .69 - .19 * col);
                         if (!MinecraftClient.getInstance().getItemRenderer().getModel(stack).hasDepthInGui()) {
@@ -46,13 +49,13 @@ public class TransfigurationTableRenderer extends BlockEntityRenderer<Transfigur
                         }
 
                         GlStateManager.scaled(.14, .14, .14);
-                        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.NONE);
-                        GlStateManager.popMatrix();
+                        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.NONE);
+                        RenderSystem.popMatrix();
                     }
                 }
             }
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 }

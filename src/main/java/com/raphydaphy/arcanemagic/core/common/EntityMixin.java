@@ -25,7 +25,7 @@ public abstract class EntityMixin {
     @Inject(method = "fromTag", at = @At("RETURN"))
     private void setDimensionIfNull(final CompoundTag compoundTag, final CallbackInfo info)
     {
-        if (compoundTag.containsKey("Dimension"))
+        if (compoundTag.contains("Dimension"))
         {
             DimensionType type = DimensionType.byRawId(compoundTag.getInt("Dimension"));
 

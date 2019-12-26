@@ -47,13 +47,13 @@ public class ParchmentScreen extends Screen {
         this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         client.getTextureManager().bindTexture(BACKGROUND);
 
         // The start x and y coords of the notebook on the screen
-        int screenCenterX = (client.window.getScaledWidth() / 2) - (SCALED_DIMENSIONS / 2);
-        int screenCenterY = (client.window.getScaledHeight() / 2) - (SCALED_DIMENSIONS / 2);
+        int screenCenterX = (client.getWindow().getScaledWidth() / 2) - (SCALED_DIMENSIONS / 2);
+        int screenCenterY = (client.getWindow().getScaledHeight() / 2) - (SCALED_DIMENSIONS / 2);
 
         RenderUtils.texRect(screenCenterX, screenCenterY, 0, 0, DIMENSIONS, DIMENSIONS, SCALED_DIMENSIONS, SCALED_DIMENSIONS, DIMENSIONS, TEX_HEIGHT);
 
@@ -77,15 +77,15 @@ public class ParchmentScreen extends Screen {
             RenderUtils.drawRequiredItems(this, parchment.getRequiredItems(), screenCenterX + SCALED_DIMENSIONS / 2 - (parchment.getRequiredItems().size() * 35) / 2, (int) (screenCenterY + 51 * SCALE + parchment.getVerticalFeatureOffset() * SCALE), mouseX, mouseY);
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private void drawCenteredUnlocalizedText(String unlocalizedText, boolean verticallyCentered, float top) {
-        RenderUtils.drawSplitString(MinecraftClient.getInstance().textRenderer, I18n.translate(unlocalizedText), MinecraftClient.getInstance().window.getScaledWidth() / 2f, (int) (top), 160, 0, verticallyCentered, true);
+        RenderUtils.drawSplitString(MinecraftClient.getInstance().textRenderer, I18n.translate(unlocalizedText), MinecraftClient.getInstance().getWindow().getScaledWidth() / 2f, (int) (top), 160, 0, verticallyCentered, true);
     }
 
     private void drawProgressBar(int progress, int screenCenterX, int screenCenterY, int verticalOffset) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(BACKGROUND);
 
@@ -103,7 +103,7 @@ public class ParchmentScreen extends Screen {
                     (int) (y + SCALE + 3 * SCALE), 0xff926527);
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
     }
 

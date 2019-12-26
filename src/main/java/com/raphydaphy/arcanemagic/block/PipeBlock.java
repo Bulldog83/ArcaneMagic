@@ -7,10 +7,11 @@ import io.github.prospector.silk.fluid.FluidInstance;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
@@ -94,7 +95,6 @@ public class PipeBlock extends WaterloggableBlockBase implements BlockEntityProv
         }
     }
 
-    @Override
     public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult info) {
         if (player.isCreative()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -109,9 +109,8 @@ public class PipeBlock extends WaterloggableBlockBase implements BlockEntityProv
         return false;
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public RenderLayer getRenderLayer() {
+        return RenderLayer.getCutout();
     }
 
     @Override
@@ -151,7 +150,7 @@ public class PipeBlock extends WaterloggableBlockBase implements BlockEntityProv
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> map) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> map) {
         super.appendProperties(map);
         map.add(UP, DOWN, NORTH, EAST, SOUTH, WEST);
     }

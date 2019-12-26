@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.core.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.init.ArcaneMagicConstants;
 import com.raphydaphy.arcanemagic.init.ModRegistry;
@@ -11,7 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -50,9 +51,10 @@ public abstract class ScreenMixin extends AbstractParentElement {
 
     private void drawArcaneMagicSoulTooltip(ItemStack stack, List<String> text, int x, int y) {
         if (!text.isEmpty()) {
-            GlStateManager.disableRescaleNormal();
-            GuiLighting.disable();
-            GlStateManager.disableLighting();
+            RenderSystem.disableRescaleNormal();
+            DiffuseLighting.disableGuiDepthLighting();
+            DiffuseLighting.disable();
+            RenderSystem.disableLighting();
             GlStateManager.disableDepthTest();
             int int_3 = 0;
 
@@ -121,7 +123,8 @@ public abstract class ScreenMixin extends AbstractParentElement {
             this.itemRenderer.zOffset = 0.0F;
             GlStateManager.enableLighting();
             GlStateManager.enableDepthTest();
-            GuiLighting.enable();
+            DiffuseLighting.enable();
+                    DiffuseLighting.enableGuiDepthLighting();
             GlStateManager.enableRescaleNormal();
         }
     }

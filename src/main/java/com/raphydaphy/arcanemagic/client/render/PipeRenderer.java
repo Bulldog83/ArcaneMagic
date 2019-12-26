@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.block.PipeBlock;
 import com.raphydaphy.arcanemagic.block.entity.PipeBlockEntity;
@@ -63,12 +64,12 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
 
 
         if (entity != null) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             MinecraftClient.getInstance().getTextureManager().bindTexture(tex);
             GlStateManager.disableCull();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             Tessellator tess = Tessellator.getInstance();
-            BufferBuilder builder = tess.getBufferBuilder();
+            BufferBuilder builder = tess.getBuffer();
 
             Direction.Axis centerAxis = null;
 
@@ -129,7 +130,7 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
             GlStateManager.translated(renderX, renderY, renderZ);
 
             if (connectionNorth.hasConnection() || connectionSouth.hasConnection() || renderCenter) {
-                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
 
                 if (!renderCenter)
                     RenderUtils.renderBox(builder, pixel * 6, pixel * 6, 0, pixel * 10, pixel * 10, 1, longAll, new int[]{1, 1, 1, 1, 1, 1});
@@ -157,7 +158,7 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
             GlStateManager.translated(-1, 0, 0);
 
             if (connectionEast.hasConnection() || connectionWest.hasConnection()) {
-                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
 
                 if (!renderCenter)
                     RenderUtils.renderBox(builder, pixel * 6, pixel * 6, 0, pixel * 10, pixel * 10, 1, longAll, new int[]{1, 1, 1, 1, 1, 1});
@@ -185,7 +186,7 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
             GlStateManager.translated(0, 0, -1);
 
             if (connectionUp.hasConnection() || connectionDown.hasConnection()) {
-                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
 
                 if (!renderCenter)
                     RenderUtils.renderBox(builder, pixel * 6, pixel * 6, 0, pixel * 10, pixel * 10, 1, longAll, new int[]{1, 1, 1, 1, 1, 1});
@@ -207,7 +208,7 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                     RenderUtils.renderBox(builder, pixel * 4, pixel * 4, pixel * 14, pixel * 12, pixel * 12, 1, bigConnector, new int[]{1, 1, 1, 1, 1, 1});
                 tess.draw();
             }
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 }

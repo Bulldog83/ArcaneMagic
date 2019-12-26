@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.block.PumpBlock;
 import com.raphydaphy.arcanemagic.block.entity.PumpBlockEntity;
@@ -37,25 +38,25 @@ public class PumpRenderer extends BlockEntityRenderer<PumpBlockEntity> {
                 PumpBlockEntity pump = (PumpBlockEntity) bottom;
                 float ticks = ArcaneMagicUtils.lerp(pump.prevTicks, pump.ticks, partialTicks);
 
-                BlockState state = getWorld().getBlockState(entity.getPos());
+                BlockState state = entity.getWorld().getBlockState(entity.getPos());
 
                 if (state.getBlock() instanceof PumpBlock) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     GlStateManager.translated(renderX, renderY, renderZ);
                     MinecraftClient.getInstance().getTextureManager().bindTexture(tex);
                     RenderUtils.rotateTo(state.get(PumpBlock.FACING));
 
                     GlStateManager.disableCull();
-                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
 
                     Tessellator tess = Tessellator.getInstance();
-                    BufferBuilder builder = tess.getBufferBuilder();
+                    BufferBuilder builder = tess.getBuffer();
 
-                    builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+                    builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
 
                     RenderUtils.renderCube(builder, 4, 4 + Math.sin((Math.PI / 180) * (ticks * 4)) * 1.9, 4, 8, 4, 8, top);
                     tess.draw();
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
             }
         }

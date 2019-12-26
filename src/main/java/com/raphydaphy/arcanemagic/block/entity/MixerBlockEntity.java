@@ -56,13 +56,13 @@ public class MixerBlockEntity extends DoubleFluidBlockEntity implements SidedInv
     @Override
     public void fromTag(CompoundTag tag) {
         super.fromTag(tag);
-        if (tag.containsKey(WATER_KEY)) {
-            water = new FluidInstance((CompoundTag) tag.getTag(WATER_KEY));
+        if (tag.contains(WATER_KEY)) {
+            water = new FluidInstance((CompoundTag) tag.get(WATER_KEY));
         } else {
             water = new FluidInstance(Fluids.WATER);
         }
-        if (tag.containsKey(LIQUIFIED_SOUL_KEY)) {
-            liquified_soul = new FluidInstance((CompoundTag) tag.getTag(LIQUIFIED_SOUL_KEY));
+        if (tag.contains(LIQUIFIED_SOUL_KEY)) {
+            liquified_soul = new FluidInstance((CompoundTag) tag.get(LIQUIFIED_SOUL_KEY));
         } else {
             liquified_soul = new FluidInstance(ModRegistry.LIQUIFIED_SOUL);
         }

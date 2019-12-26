@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.notebook;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.api.docs.NotebookElement;
 import com.raphydaphy.arcanemagic.api.docs.NotebookSection;
@@ -10,7 +11,7 @@ import com.raphydaphy.arcanemagic.util.RenderUtils;
 import com.raphydaphy.crochet.data.DataHolder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemConvertible;
@@ -28,7 +29,7 @@ class BasicNotebookElements {
     }
 
     private static int linesPerPage() {
-        int guiScale = (int) MinecraftClient.getInstance().window.getScaleFactor();
+        int guiScale = (int) MinecraftClient.getInstance().getWindow().getScaleFactor();
         ;
         switch (guiScale) {
             case 3:
@@ -41,7 +42,7 @@ class BasicNotebookElements {
     }
 
     private static double textScale() {
-        int guiScale = (int) MinecraftClient.getInstance().window.getScaleFactor();
+        int guiScale = (int) MinecraftClient.getInstance().getWindow().getScaleFactor();
         ;
         switch (guiScale) {
             case 4:
@@ -243,7 +244,7 @@ class BasicNotebookElements {
         public int draw(Screen screen, int x, int y, int mouseX, int mouseY, int xTop, int yTop) {
             if (this.recipe != null) {
                 if (this.recipe instanceof TransfigurationRecipe) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
 
                     MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier(ArcaneMagic.DOMAIN, "textures/misc/circle_hud.png"));
 
@@ -254,12 +255,14 @@ class BasicNotebookElements {
                     RenderUtils.texRect(x + 36, y, 0, 0, 36, 36, 36, 36, 360, 360);
                     RenderUtils.texRect(x + 36, y, 36 * col, 36 + 36 * row, 36, 36, 36, 36, 360, 360);
 
-                    GuiLighting.enableForItems();
+                    DiffuseLighting.enable();
+                    DiffuseLighting.enableGuiDepthLighting();
                     MinecraftClient.getInstance().getItemRenderer().renderGuiItem(this.recipe.getOutput(), x + 46, y + 10);
                     MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, this.recipe.getOutput(), x + 46, y + 10, null);
-                    GuiLighting.disable();
+                    DiffuseLighting.disableGuiDepthLighting();
+                    DiffuseLighting.disable();
 
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 } else {
                     RenderUtils.drawRecipeOutput(this.recipe, x + 41, y);
                 }

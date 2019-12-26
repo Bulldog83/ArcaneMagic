@@ -7,7 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath 'net.fabricmc:fabric-loom:0.2.5-SNAPSHOT'
-		classpath "com.wynprice.cursemaven:CurseMaven:1.1.0"
+		classpath "com.wynprice.cursemaven:CurseMaven:2.1.1"
 	}
 }
 
@@ -54,10 +54,10 @@ dependencies {
 	modCompile curse.resolve("cloth", "${project.cloth_version}")
 	modCompile "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modCompile "io.github.prospector:modmenu:${project.modmenu_version}"
-	modCompile curse.resolve("informed-load-fabric", "${project.informedload_version}")
+	modCompile curse.resolve("informed-load", "${project.informedload_version}")
 	modCompile curse.resolve("auto-config", "${project.autoconfig_version}")
 	//for testing if anything breaks with optifine, uncomment as necessary
-//	modCompile curse.resolve("optifabric", "${project.optifabric_version}")
+	//modCompile curse.resolve("optifabric", "${project.optifabric_version}")
 
 	// Nested Jars
 	include "io.github.prospector.silk:SilkAPI:${project.silk_version}"

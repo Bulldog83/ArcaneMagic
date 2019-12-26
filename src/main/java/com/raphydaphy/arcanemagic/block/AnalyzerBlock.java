@@ -17,6 +17,7 @@ import com.raphydaphy.cutsceneapi.cutscene.CutsceneManager;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,7 +56,6 @@ public class AnalyzerBlock extends OrientableBlockBase implements BlockEntityPro
         super(FabricBlockSettings.of(Material.WOOD).strength(2f, 2f).sounds(BlockSoundGroup.WOOD).build());
     }
 
-    @Override
     public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
@@ -138,7 +138,7 @@ public class AnalyzerBlock extends OrientableBlockBase implements BlockEntityPro
                 if (data.getIntArray(ArcaneMagicConstants.GATHER_QUEST_ANALYZED_INDEXES_KEY).length < 4) {
                     for (int index : data.getIntArray(ArcaneMagicConstants.GATHER_QUEST_INDEXES_KEY)) {
                         Ingredient ingredient = DiscoveryParchment.GATHER_QUEST_OPTIONS[index];
-                        if (ingredient.method_8093(stack)) // apply
+                        if (ingredient.test(stack)) // apply
                         {
                             int[] analyzedArray = data.getIntArray(ArcaneMagicConstants.GATHER_QUEST_ANALYZED_INDEXES_KEY);
                             List<Integer> analyzed = new ArrayList<>();
@@ -159,7 +159,7 @@ public class AnalyzerBlock extends OrientableBlockBase implements BlockEntityPro
                     for (int index : data.getIntArray(ArcaneMagicConstants.ANALYSIS_QUEST_INDEXES_KEY)) {
                         if (index != -1) {
                             Ingredient ingredient = DiscoveryParchment.ANALYSIS_QUEST_OPTIONS[index];
-                            if (ingredient.method_8093(stack)) // apply
+                            if (ingredient.test(stack)) // apply
                             {
                                 int[] analyzedArray = data.getIntArray(ArcaneMagicConstants.ANALYSIS_QUEST_ANALYZED_INDEXES_KEY);
                                 List<Integer> analyzed = new ArrayList<>();
@@ -190,9 +190,8 @@ public class AnalyzerBlock extends OrientableBlockBase implements BlockEntityPro
         }
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public RenderLayer getRenderLayer() {
+        return RenderLayer.getCutout();
     }
 
     @Override
@@ -224,8 +223,7 @@ public class AnalyzerBlock extends OrientableBlockBase implements BlockEntityPro
         }
     }
 
-    @Override
-    public BlockRenderLayer[] getExtraRenderLayers() {
-        return new BlockRenderLayer[]{BlockRenderLayer.TRANSLUCENT};
+    public RenderLayer[] getExtraRenderLayers() {
+        return new RenderLayer[]{ RenderLayer.getTranslucent() };
     }
 }

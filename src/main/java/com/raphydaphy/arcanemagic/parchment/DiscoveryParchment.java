@@ -132,7 +132,7 @@ public class DiscoveryParchment implements Parchment {
                     for (int i = 0; i < player.inventory.getInvSize(); i++) {
                         for (Ingredient ingredient : ingredients) {
                             // If the player has this item in their inventory
-                            if (ingredient.method_8093(player.inventory.getInvStack(i))) {
+                            if (ingredient.test(player.inventory.getInvStack(i))) {
                                 requiredItems.put(ingredient, true);
                             }
                         }

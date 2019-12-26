@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -41,7 +41,7 @@ public class OrientableBlockBase extends WaterloggableBlockBase {
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> map) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> map) {
         super.appendProperties(map);
         map.add(FACING);
     }

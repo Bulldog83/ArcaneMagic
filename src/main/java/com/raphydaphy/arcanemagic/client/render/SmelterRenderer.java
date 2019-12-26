@@ -1,6 +1,7 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.block.SmelterBlock;
 import com.raphydaphy.arcanemagic.block.entity.SmelterBlockEntity;
@@ -10,7 +11,7 @@ import com.raphydaphy.arcanemagic.util.UVSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -43,26 +44,26 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
             ItemStack output1 = entity.getInvStack(1).copy();
             ItemStack output2 = entity.getInvStack(2).copy();
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             GlStateManager.translated(renderX, renderY, renderZ);
-            BlockState state = getWorld().getBlockState(entity.getPos());
+            BlockState state = entity.getWorld().getBlockState(entity.getPos());
 
             if (state.getBlock() instanceof SmelterBlock) {
                 animTime = 8f;
                 int smeltTime = entity.getSmeltTime();
                 boolean finishing = smeltTime >= SmelterBlockEntity.TOTAL_SMELTING_TIME - animTime;
 
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
                 MinecraftClient.getInstance().getTextureManager().bindTexture(detail);
                 RenderUtils.rotateTo(state.get(SmelterBlock.FACING));
 
                 GlStateManager.disableCull();
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
 
                 Tessellator tess = Tessellator.getInstance();
-                BufferBuilder builder = tess.getBufferBuilder();
+                BufferBuilder builder = tess.getBuffer();
 
-                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_NORMAL);
+                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
 
                 float startY = 2;
 
@@ -79,7 +80,7 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
 
                 RenderUtils.renderCube(builder, 4, startY, 2, 8, 6, 2, teeth);
                 tess.draw();
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
                 if (smeltTime < animTime || finishing) {
                     if (finishing && !input.isEmpty()) {
                         Optional<BlastingRecipe> optionalRecipe = MinecraftClient.getInstance().world.getRecipeManager().getFirstMatch(RecipeType.BLASTING, new BasicInventory(input), MinecraftClient.getInstance().world);
@@ -98,15 +99,15 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
                     if (!output1.isEmpty()) {
                         if (!output2.isEmpty()) {
                             boolean depth = MinecraftClient.getInstance().getItemRenderer().getModel(output1).hasDepthInGui() || MinecraftClient.getInstance().getItemRenderer().getModel(output2).hasDepthInGui();
-                            GlStateManager.pushMatrix();
+                            RenderSystem.pushMatrix();
                             renderItemPre(state);
                             if (depth) {
                                 GlStateManager.translated(.125, 0, 0);
                             }
                             renderItem(output1);
-                            GlStateManager.popMatrix();
+                            RenderSystem.popMatrix();
 
-                            GlStateManager.pushMatrix();
+                            RenderSystem.pushMatrix();
                             renderItemPre(state);
                             if (depth) {
                                 GlStateManager.translated(-.125, 0, 0);
@@ -114,7 +115,7 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
                                 GlStateManager.translated(0, .02, 0);
                             }
                             renderItem(output2);
-                            GlStateManager.popMatrix();
+                            RenderSystem.popMatrix();
 
                         } else {
                             renderItemPre(state);
@@ -128,16 +129,17 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
                     }
                 }
             }
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 
     private void renderItemPre(BlockState state) {
         RenderUtils.rotateTo(state.get(SmelterBlock.FACING));
 
-        GuiLighting.enable();
+        DiffuseLighting.enable();
+        DiffuseLighting.enableGuiDepthLighting();
         GlStateManager.enableLighting();
-        GlStateManager.disableRescaleNormal();
+        RenderSystem.disableRescaleNormal();
         GlStateManager.translated(0.5, 0.065, 0.12);
 
     }
@@ -148,6 +150,6 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
             GlStateManager.rotated(90, 1, 0, 0);
             GlStateManager.scaled(0.5, 0.5, 0.5);
         }
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Type.GROUND);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND);
     }
 }

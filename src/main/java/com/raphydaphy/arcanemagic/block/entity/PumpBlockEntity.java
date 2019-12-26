@@ -41,8 +41,8 @@ public class PumpBlockEntity extends DoubleFluidBlockEntity implements Tickable,
     @Override
     public void fromTag(CompoundTag tag) {
         super.fromTag(tag);
-        if (tag.containsKey(WATER_KEY)) {
-            water = new FluidInstance((CompoundTag) tag.getTag(WATER_KEY));
+        if (tag.contains(WATER_KEY)) {
+            water = new FluidInstance((CompoundTag) tag.get(WATER_KEY));
         } else {
             water = new FluidInstance(Fluids.WATER);
         }

@@ -40,7 +40,7 @@ public class NotebookScreen extends Screen {
     public NotebookScreen(ItemStack stack) {
         super(new TranslatableText("item.arcanemagic.notebook"));
         CompoundTag tag = stack.getTag();
-        if (tag != null && tag.containsKey(ArcaneMagicConstants.NOTEBOOK_SECTION_KEY)) {
+        if (tag != null && tag.contains(ArcaneMagicConstants.NOTEBOOK_SECTION_KEY)) {
             NotebookSection section = NotebookSectionRegistry.get(new Identifier(tag.getString(ArcaneMagicConstants.NOTEBOOK_SECTION_KEY)));
             int page = tag.getInt(ArcaneMagicConstants.NOTEBOOK_PAGE_KEY);
             int contentsPage = tag.getInt(ArcaneMagicConstants.NOTEBOOK_CONTENTS_PAGE_KEY);
@@ -164,8 +164,8 @@ public class NotebookScreen extends Screen {
 
     private boolean overRightArrow() {
         MinecraftClient client = MinecraftClient.getInstance();
-        int xTop = (client.window.getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
-        int yTop = (client.window.getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
+        int xTop = (client.getWindow().getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
+        int yTop = (client.getWindow().getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
 
         int right = xTop + 142;
 
@@ -174,8 +174,8 @@ public class NotebookScreen extends Screen {
 
     private boolean overLeftArrow() {
         MinecraftClient client = MinecraftClient.getInstance();
-        int xTop = (client.window.getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
-        int yTop = (client.window.getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
+        int xTop = (client.getWindow().getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
+        int yTop = (client.getWindow().getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
 
         int left = xTop + 17;
 
@@ -185,8 +185,8 @@ public class NotebookScreen extends Screen {
     private boolean overBackArrow() {
         MinecraftClient client = MinecraftClient.getInstance();
         //right + 85, yTop + ArcaneMagicConstants.NOTEBOOK_HEIGHT - 21
-        int xTop = (client.window.getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
-        int yTop = (client.window.getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
+        int xTop = (client.getWindow().getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
+        int yTop = (client.getWindow().getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
 
         int right = xTop + 142;
         return scaledMouseX >= right - 15 && scaledMouseY >= yTop + ArcaneMagicConstants.NOTEBOOK_HEIGHT - 21 && scaledMouseX <= right && scaledMouseY <= yTop + ArcaneMagicConstants.NOTEBOOK_HEIGHT - 10;
@@ -201,10 +201,10 @@ public class NotebookScreen extends Screen {
         this.scaledMouseX = mouseX;
         this.scaledMouseY = mouseY;
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
-        int xTop = (client.window.getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
-        int yTop = (client.window.getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
+        int xTop = (client.getWindow().getScaledWidth() / 2) - (ArcaneMagicConstants.NOTEBOOK_WIDTH / 2);
+        int yTop = (client.getWindow().getScaledHeight() / 2) - (ArcaneMagicConstants.NOTEBOOK_HEIGHT / 2);
 
         int left = xTop + 17;
         int right = xTop + 142;
@@ -219,16 +219,16 @@ public class NotebookScreen extends Screen {
         // Intro page
         int pointer = yTop + 15;
         for (NotebookElement element : this.leftElements) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             pointer += element.draw(this, left, pointer, mouseX, mouseY, xTop, yTop);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
         pointer = yTop + 15;
         for (NotebookElement element : this.rightElements) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             pointer += element.draw(this, right, pointer, mouseX, mouseY, xTop, yTop);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
         client.getTextureManager().bindTexture(ArcaneMagicConstants.NOTEBOOK_TEXTURE);
@@ -246,18 +246,18 @@ public class NotebookScreen extends Screen {
         }
 
         for (NotebookElement element : this.leftElements) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             element.drawOverlay(this, mouseX, mouseY, xTop, yTop);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
         for (NotebookElement element : this.rightElements) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             element.drawOverlay(this, mouseX, mouseY, xTop, yTop);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override

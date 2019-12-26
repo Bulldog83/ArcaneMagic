@@ -47,7 +47,7 @@ public class ParticleRenderer {
 
     public void render(float partialTicks, Camera camera) // Camera
     {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         float rotationX = MathHelper.cos(camera.getYaw() * 0.017453292F); // yaw
         float rotationZ = MathHelper.sin(camera.getYaw() * 0.017453292F); // yaw
@@ -71,9 +71,9 @@ public class ParticleRenderer {
             MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
             Tessellator tess = Tessellator.getInstance();
-            BufferBuilder buffer = tess.getBufferBuilder();
+            BufferBuilder buffer = tess.getBuffer();
 
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_LMAP);
             for (Particle particle : particles) {
                 if (particle instanceof ArcaneMagicParticle) {
@@ -84,7 +84,7 @@ public class ParticleRenderer {
             }
             tess.draw();
 
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE);
             buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_LMAP);
             for (Particle particle : particles) {
                 if (particle != null) {
@@ -96,7 +96,7 @@ public class ParticleRenderer {
             tess.draw();
 
             GlStateManager.disableDepthTest(); // disableDepth
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_LMAP);
             for (Particle particle : particles) {
                 if (particle instanceof ArcaneMagicParticle) {
@@ -107,7 +107,7 @@ public class ParticleRenderer {
             }
             tess.draw();
 
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DestFactor.ONE);
             buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR_LMAP);
             for (Particle particle : particles) {
                 if (particle != null) {
@@ -121,12 +121,12 @@ public class ParticleRenderer {
 
             GlStateManager.enableCull();
             GlStateManager.depthMask(true);
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             GlStateManager.disableBlend();
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     void addParticle(Particle particle) {

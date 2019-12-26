@@ -2,7 +2,7 @@ package com.raphydaphy.arcanemagic.core.client;
 
 import com.raphydaphy.arcanemagic.client.render.IExtraRenderLayers;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.block.RenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -24,10 +24,10 @@ import java.util.Set;
  */
 @Mixin(ChunkRenderer.class)
 public abstract class ChunkRendererMixin {
-    @Inject(at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/block/Block.getRenderLayer()Lnet/minecraft/block/BlockRenderLayer;"), method = "rebuildChunk(FFFLnet/minecraft/client/render/chunk/ChunkRenderTask;)V", locals = LocalCapture.CAPTURE_FAILHARD)
-    private void rebuildChunk(float float_1, float float_2, float float_3, ChunkRenderTask chunkRenderTask_1, CallbackInfo cbInfo, ChunkRenderData chunkRenderData_1, BlockPos blockPos_1, BlockPos blockPos_2, ChunkOcclusionGraphBuilder occlusionGraphBuilder, Set hashSet, ChunkRendererRegion safeWorldView, boolean[] booleans_1, Random random_1, BlockRenderManager blockRenderManager_1, Iterator var16, BlockPos blockPos_3, BlockState blockState_1, Block block_1, BlockRenderLayer normalRenderLayer) {
+    @Inject(at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/block/Block.getRenderLayer()Lnet/minecraft/block/RenderLayer;"), method = "rebuildChunk(FFFLnet/minecraft/client/render/chunk/ChunkRenderTask;)V", locals = LocalCapture.CAPTURE_FAILHARD)
+    private void rebuildChunk(float float_1, float float_2, float float_3, ChunkRenderTask chunkRenderTask_1, CallbackInfo cbInfo, ChunkRenderData chunkRenderData_1, BlockPos blockPos_1, BlockPos blockPos_2, ChunkOcclusionGraphBuilder occlusionGraphBuilder, Set hashSet, ChunkRendererRegion safeWorldView, boolean[] booleans_1, Random random_1, BlockRenderManager blockRenderManager_1, Iterator var16, BlockPos blockPos_3, BlockState blockState_1, Block block_1, RenderLayer normalRenderLayer) {
         if (block_1 instanceof IExtraRenderLayers) {
-            for (BlockRenderLayer layer : ((IExtraRenderLayers) block_1).getExtraRenderLayers()) {
+            for (RenderLayer layer : ((IExtraRenderLayers) block_1).getExtraRenderLayers()) {
                 if (layer == normalRenderLayer) {
                     throw new IllegalStateException("Normal render layer should not be returned by getExtraRenderLayers()");
                 }

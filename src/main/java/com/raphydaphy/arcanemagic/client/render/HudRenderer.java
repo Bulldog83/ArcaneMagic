@@ -1,6 +1,6 @@
 package com.raphydaphy.arcanemagic.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.init.ArcaneMagicConstants;
 import com.raphydaphy.arcanemagic.init.ModRegistry;
@@ -44,12 +44,12 @@ public class HudRenderer {
         int row = stage / 10;
         int col = stage % 10;
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
-        GlStateManager.enableBlend();
-        GlStateManager.color4f(1, 1, 1, alpha);
-        GlStateManager.scaled(1.5, 1.5, 1.5);
-        GlStateManager.translated(8, 8, 0);
+        RenderSystem.enableBlend();
+        RenderSystem.color4f(1, 1, 1, alpha);
+        RenderSystem.scaled(1.5, 1.5, 1.5);
+        RenderSystem.translated(8, 8, 0);
 
         mc.getTextureManager().bindTexture(MAIN_TEX);
 
@@ -60,13 +60,13 @@ public class HudRenderer {
                 /* width */ 360, /* height */ 360);
 
         // Filled area
-        GlStateManager.color4f(displayedRed, displayedGreen, displayedBlue, alpha);
+        RenderSystem.color4f(displayedRed, displayedGreen, displayedBlue, alpha);
         DrawableHelper.blit(/* x */ 0, /* y */ 0,
                 /* min-u */ 36 * col, /* min-v */ 36 + 36 * row,
                 /* max-u */ 36, /* max-v */ 36,
                 /* width */ 360, /* height */ 360);
 
-        GlStateManager.color4f(1, 1, 1, alpha);
+        RenderSystem.color4f(1, 1, 1, alpha);
         if (mode == Mode.DAGGER) {
             if (passiveCrystal != ArcaneMagicUtils.ForgeCrystal.EMPTY) {
                 mc.getTextureManager().bindTexture(new Identifier(ArcaneMagic.DOMAIN, "textures/" + passiveCrystal.pommel.getPath() + ".png"));
@@ -78,7 +78,7 @@ public class HudRenderer {
             }
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void update() {

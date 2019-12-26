@@ -6,7 +6,7 @@ import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,7 @@ public class WaterloggableBlockBase extends Block implements Waterloggable {
 
     protected WaterloggableBlockBase(Settings settings) {
         super(settings);
-        this.setDefaultState((this.stateFactory.getDefaultState()).with(WATERLOGGED, false));
+        this.setDefaultState((this.stateManager.getDefaultState()).with(WATERLOGGED, false));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class WaterloggableBlockBase extends Block implements Waterloggable {
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> map) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> map) {
         map.add(WATERLOGGED);
     }
 }

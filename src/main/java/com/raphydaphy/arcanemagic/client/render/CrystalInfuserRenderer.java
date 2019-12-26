@@ -1,12 +1,13 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.block.base.OrientableBlockBase;
 import com.raphydaphy.arcanemagic.block.entity.CrystalInfuserBlockEntity;
 import com.raphydaphy.arcanemagic.util.ArcaneMagicUtils;
 import com.raphydaphy.arcanemagic.util.RenderUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.EquipmentSlot;
@@ -33,10 +34,11 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                 //ParticleUtil.spawnGlowParticle(entity.getWorld(),entity.getPos().getX() + .5f, entity.getPos().getY() + 1.1f, entity.getPos().getZ() + .5f,0, 0, 0, 1, 1, 1, 0.1f, 0,0.5f, 100);
             } else {
 
-                GlStateManager.pushMatrix();
-                GuiLighting.enable();
+                RenderSystem.pushMatrix();
+                DiffuseLighting.enable();
+                DiffuseLighting.enableGuiDepthLighting();
                 GlStateManager.enableLighting();
-                GlStateManager.disableRescaleNormal();
+                RenderSystem.disableRescaleNormal();
 
                 craftingTime /= 2f;
 
@@ -53,7 +55,7 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
 
                 // Render Equipment
                 if (!equipment.isEmpty()) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
 
                     if (active) {
                         GlStateManager.translated(.5, 1 + Math.sin((Math.PI / 180) * (ticks * 4)) / 15, .5);
@@ -68,9 +70,9 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                         GlStateManager.translated(0, -.08, 0);
                     }
                     GlStateManager.scaled(0.8, 0.8, 0.8);
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(equipment, ModelTransformation.Type.GROUND);
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(equipment, ModelTransformation.Mode.GROUND);
 
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
 
                 ticks += 400;
@@ -82,7 +84,7 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
 
                 // Render Binder
                 if (!binder.isEmpty()) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
 
                     if (active) {
                         float inverseRadius = (craftingTime) / 1000f + 3;
@@ -112,8 +114,8 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                     }
 
                     GlStateManager.scaled(scale, scale, scale);
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(binder, ModelTransformation.Type.GROUND);
-                    GlStateManager.popMatrix();
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(binder, ModelTransformation.Mode.GROUND);
+                    RenderSystem.popMatrix();
 
 
                 }
@@ -122,7 +124,7 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
 
                 // Render Crystal
                 if (!crystal.isEmpty()) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
 
                     if (active) {
                         float inverseRadius = (craftingTime) / 1000f + 3;
@@ -143,11 +145,11 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                     }
 
                     GlStateManager.scaled(scale, scale, scale);
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(crystal, ModelTransformation.Type.GROUND);
-                    GlStateManager.popMatrix();
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(crystal, ModelTransformation.Mode.GROUND);
+                    RenderSystem.popMatrix();
                 }
 
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }
 
         }

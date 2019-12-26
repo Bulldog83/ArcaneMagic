@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -30,9 +31,8 @@ public class PumpBlock extends DoubleBlockBase implements BlockEntityProvider {
         super(FabricBlockSettings.of(Material.STONE).strength(1.5f, 6f).build());
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public RenderLayer getRenderLayer() {
+        return RenderLayer.getCutout();
     }
 
     @Override

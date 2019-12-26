@@ -44,11 +44,11 @@ public class TremorTracker {
         for (ServerPlayerEntity player : world.getPlayers()) {
             DataHolder dataPlayer = (DataHolder) player;
 
-            if (!player.isSpectator() && !player.isCreative() && dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).getBoolean(ArcaneMagicConstants.PLACED_MIXER_KEY) && player.y < 25) {
+            if (!player.isSpectator() && !player.isCreative() && dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).getBoolean(ArcaneMagicConstants.PLACED_MIXER_KEY) && player.getY() < 25) {
                 if (world.getTime() % 100 == 0) {
                     int timeSinceTremor = dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).getInt(ArcaneMagicConstants.TIME_SINCE_TREMOR_KEY);
                     int timeSinceVoidSound = dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).getInt(ArcaneMagicConstants.TIME_SINCE_VOID_SOUND_KEY);
-                    int rand = ArcaneMagic.RANDOM.nextInt((int) (player.y * 3));
+                    int rand = ArcaneMagic.RANDOM.nextInt((int) (player.getY() * 3));
                     if (rand == 0) {
                         if (!dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).getBoolean(ArcaneMagicConstants.EXPERIENCED_TREMOR_KEY)) {
                             dataPlayer.getAdditionalData(ArcaneMagic.DOMAIN).putBoolean(ArcaneMagicConstants.EXPERIENCED_TREMOR_KEY, true);
@@ -91,9 +91,9 @@ public class TremorTracker {
                     float inverseSpread = 0.2f;
 
                     for (int i = 0; i < 16; i++) {
-                        float posX = (float) (player.x + ArcaneMagic.RANDOM.nextGaussian() / inverseSpread);
-                        float posY = (float) player.y;
-                        float posZ = (float) (player.z + ArcaneMagic.RANDOM.nextGaussian() / inverseSpread);
+                        float posX = (float) (player.getX() + ArcaneMagic.RANDOM.nextGaussian() / inverseSpread);
+                        float posY = (float) player.getY();
+                        float posZ = (float) (player.getZ() + ArcaneMagic.RANDOM.nextGaussian() / inverseSpread);
 
                         BlockPos gridPos = new BlockPos(posX, Math.round(posY), posZ);
 
@@ -151,7 +151,7 @@ public class TremorTracker {
             GlStateManager.rotated(intensity * noise2.noise1(time), 0, 1, 0);
             GlStateManager.rotated(intensity * noise3.noise1(time), 0, 0, 1);
             player.pitch += intensity * noise4.noise1(time);
-            player.yaw += intensity * noise5.noise1(time);
+            player.getY()aw += intensity * noise5.noise1(time);
         }
     }
 }

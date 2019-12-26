@@ -2,6 +2,7 @@ package com.raphydaphy.arcanemagic.client.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.init.ArcaneMagicConstants;
 import com.raphydaphy.arcanemagic.util.ArcaneMagicUtils;
@@ -15,6 +16,7 @@ import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelItemPropertyOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -45,8 +47,8 @@ public class IronDaggerModel implements UnbakedModel {
     }
 
     @Override
-    public Collection<Identifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<String> var2) {
-        ImmutableSet.Builder<Identifier> builder = ImmutableSet.builder();
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> var2) {
+        ImmutableSet.Builder<SpriteIdentifier> builder = ImmutableSet.builder();
 
         builder.add(BASE);
         baseModel = unbakedModelGetter.apply(BASE_MODEL);
@@ -192,4 +194,11 @@ public class IronDaggerModel implements UnbakedModel {
             return Objects.hash(hilt, pommel);
         }
     }
+
+    @Override
+	public BakedModel bake(ModelLoader paramModelLoader, Function<SpriteIdentifier, Sprite> paramFunction,
+			ModelBakeSettings paramModelBakeSettings, Identifier paramIdentifier) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

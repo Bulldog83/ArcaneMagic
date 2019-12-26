@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,7 +69,6 @@ public class SmelterBlock extends DoubleBlockBase implements BlockEntityProvider
         super(FabricBlockSettings.of(Material.STONE).strength(3.5f, 3.5f).build());
     }
 
-    @Override
     public boolean activate(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
@@ -96,9 +96,8 @@ public class SmelterBlock extends DoubleBlockBase implements BlockEntityProvider
         return ArcaneMagicUtils.pedestalInteraction(world, player, blockEntity, hand, 0);
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public RenderLayer getRenderLayer() {
+        return RenderLayer.getCutout();
     }
 
     @Override

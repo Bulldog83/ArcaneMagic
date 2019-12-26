@@ -15,7 +15,7 @@ import com.raphydaphy.arcanemagic.network.TremorPacket;
 import com.raphydaphy.arcanemagic.util.TremorTracker;
 import com.raphydaphy.cutsceneapi.fakeworld.storage.CutsceneWorldLoader;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;

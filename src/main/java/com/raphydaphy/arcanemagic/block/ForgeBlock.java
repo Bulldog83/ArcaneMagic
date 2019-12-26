@@ -16,7 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
@@ -154,7 +154,7 @@ public class ForgeBlock extends OrientableBlockBase {
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> map) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> map) {
         super.appendProperties(map);
         map.add(PART);
     }

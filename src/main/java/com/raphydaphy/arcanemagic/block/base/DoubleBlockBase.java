@@ -16,7 +16,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
@@ -113,7 +113,7 @@ public class DoubleBlockBase extends OrientableBlockBase implements MultiBlock {
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> map) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> map) {
         super.appendProperties(map);
         map.add(HALF);
     }

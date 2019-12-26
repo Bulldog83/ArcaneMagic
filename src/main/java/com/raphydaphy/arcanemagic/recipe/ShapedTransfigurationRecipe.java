@@ -60,7 +60,7 @@ public class ShapedTransfigurationRecipe implements TransfigurationRecipe {
 
                 ItemStack invStack = inv.getInvStack(row + col * 3);
 
-                if (!(ingredient.isEmpty() && (invStack.isEmpty() || invStack.getItem() == Items.GLASS_PANE)) && !ingredient.method_8093(invStack)) // apply
+                if (!(ingredient.isEmpty() && (invStack.isEmpty() || invStack.getItem() == Items.GLASS_PANE)) && !ingredient.test(invStack)) // apply
                 {
                     return false;
                 }
