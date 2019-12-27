@@ -59,7 +59,7 @@ public class WorldRendererMixin {
         float float_4 = (float) vec3d_1.z;
         RenderSystem.color3f(float_2, float_3, float_4);
         Tessellator tessellator_1 = Tessellator.getInstance();
-        BufferBuilder bufferBuilder_1 = tessellator_1.getBufferBuilder();
+        BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
         GlStateManager.depthMask(false);
         GlStateManager.enableFog();
         RenderSystem.color3f(float_2, float_3, float_4);

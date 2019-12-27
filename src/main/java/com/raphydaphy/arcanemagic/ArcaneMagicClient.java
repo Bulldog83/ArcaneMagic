@@ -1,6 +1,5 @@
 package com.raphydaphy.arcanemagic;
 
-import com.raphydaphy.arcanemagic.block.entity.*;
 import com.raphydaphy.arcanemagic.client.model.ArcaneModelLoader;
 import com.raphydaphy.arcanemagic.client.model.IronDaggerModel;
 import com.raphydaphy.arcanemagic.client.particle.ParticleRenderer;
@@ -20,9 +19,7 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceType;
