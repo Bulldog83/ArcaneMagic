@@ -19,11 +19,14 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.BlastingRecipe;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Quaternion;
+
 import org.lwjgl.opengl.GL11;
 
 import java.util.Optional;
@@ -50,8 +53,12 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
             ItemStack output1 = entity.getInvStack(1).copy();
             ItemStack output2 = entity.getInvStack(2).copy();
 
+            double renderX = dispatcher.camera.getPos().x;
+            double renderY = dispatcher.camera.getPos().y;
+            double renderZ = dispatcher.camera.getPos().z;            
+            
             matrices.push();
-            matrices.translate(0, 0, 0);
+            matrices.translate(renderX, renderY, renderZ);
             BlockState state = entity.getWorld().getBlockState(entity.getPos());
 
             if (state.getBlock() instanceof SmelterBlock) {
@@ -105,23 +112,23 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
                     if (!output1.isEmpty()) {
                         if (!output2.isEmpty()) {
                             boolean depth = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(output1, entity.getWorld(), null).hasDepthInGui() || MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(output2, entity.getWorld(), null).hasDepthInGui();
-                            RenderSystem.pushMatrix();
+                            matrices.push();
                             renderItemPre(state);
                             if (depth) {
-                                RenderSystem.translated(.125, 0, 0);
+                            	matrices.translate(.125, 0, 0);
                             }
                             renderItem(output1, matrices, vertexConsumers, light, overlay);
-                            RenderSystem.popMatrix();
+                            matrices.pop();
 
-                            RenderSystem.pushMatrix();
+                            matrices.push();
                             renderItemPre(state);
                             if (depth) {
-                                RenderSystem.translated(-.125, 0, 0);
+                            	matrices.translate(-.125, 0, 0);
                             } else {
-                                RenderSystem.translated(0, .02, 0);
+                            	matrices.translate(0, .02, 0);
                             }
                             renderItem(output2, matrices, vertexConsumers, light, overlay);
-                            RenderSystem.popMatrix();
+                            matrices.pop();
 
                         } else {
                             renderItemPre(state);
@@ -143,7 +150,6 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
         RenderUtils.rotateTo(state.get(SmelterBlock.FACING));
 
         DiffuseLighting.enable();
-        DiffuseLighting.enableGuiDepthLighting();
         RenderSystem.enableLighting();
         RenderSystem.disableRescaleNormal();
         RenderSystem.translated(0.5, 0.065, 0.12);
@@ -152,9 +158,11 @@ public class SmelterRenderer extends BlockEntityRenderer<SmelterBlockEntity> {
 
     private void renderItem(ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (!MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, null, null).hasDepthInGui()) {
-            RenderSystem.translated(0, .068, -0.06);
-            RenderSystem.rotatef(90, 1, 0, 0);
-            RenderSystem.scaled(0.5, 0.5, 0.5);
+        	matrices.translate(0, .068, -0.06);
+        	Vector3f vec = new Vector3f(1F, 0F, 0F);
+			vec.reciprocal();                
+            matrices.multiply(new Quaternion(vec, 90, true));
+            matrices.scale(0.5F, 0.5F, 0.5F);
         }
         MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
     }

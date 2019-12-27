@@ -19,11 +19,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -66,12 +68,11 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             RenderSystem.pushMatrix();
 
             DiffuseLighting.enable();
-            DiffuseLighting.enableGuiDepthLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
-            GlStateManager.enableAlphaTest();
+            RenderSystem.enableAlphaTest();
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
 
             for (MixerRenderInstance instance : renderQueue) {
@@ -81,7 +82,6 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             GlStateManager.enableCull();
             GlStateManager.depthMask(true);
             GlStateManager.disableBlend();
-            DiffuseLighting.disableGuiDepthLighting();
             DiffuseLighting.disable();
 
             RenderSystem.popMatrix();
@@ -121,8 +121,8 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
         }
     }
 
-    private void renderRing(MixerBlockEntity entity, double renderX, double renderY, double renderZ) {
-        RenderSystem.pushMatrix();
+    private void renderRing(MixerBlockEntity entity, MatrixStack matrices, double renderX, double renderY, double renderZ) {
+    	matrices.push();
         GlStateManager.disableCull();
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder builder = tess.getBuffer();
@@ -134,28 +134,33 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
                 renderX + pixel * 12, renderY + 1, renderZ + pixel * 12, (waterColor >> 16 & 255), (waterColor >> 8 & 255), (waterColor & 255), 255, ring, new int[]{1, 1, 1, 1, 1, 1});
         tess.draw();
         GlStateManager.enableCull();
-        RenderSystem.popMatrix();
+        matrices.pop();
     }
 
     public void render(MixerBlockEntity entity, float partialTicks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (entity != null) {
-            if (entity.isBottom()) {
-                renderRing(entity, renderX, renderY, renderZ);
+        if (entity != null) {            
+        	double renderX = dispatcher.camera.getPos().x;
+            double renderY = dispatcher.camera.getPos().y;
+            double renderZ = dispatcher.camera.getPos().z;
+        	
+        	if (entity.isBottom()) {
+                renderRing(entity, matrices, renderX, renderY, renderZ);
                 ItemStack stack = entity.getInvStack(0);
                 float ticks = ArcaneMagicUtils.lerp(entity.ticks - 1, entity.ticks, partialTicks);
                 if (!stack.isEmpty()) {
-                    RenderSystem.pushMatrix();
+                	matrices.push();
 
                     DiffuseLighting.enable();
-                    DiffuseLighting.enableGuiDepthLighting();
                     RenderSystem.enableLighting();
                     RenderSystem.disableRescaleNormal();
-                    RenderSystem.translated(renderX + .5, renderY + 0.35 + Math.sin((Math.PI / 180) * (ticks * 4)) / 30, renderZ + .5);
-                    RenderSystem.rotatef(2 * ticks, 0, 1, 0);
-                    RenderSystem.scaled(0.7, 0.7, 0.7);
+                    matrices.translate(renderX + .5, renderY + 0.35 + Math.sin((Math.PI / 180) * (ticks * 4)) / 30, renderZ + .5);
+                    Vector3f vec = new Vector3f(0F, 1F, 0F);
+        			vec.reciprocal();                
+                    matrices.multiply(new Quaternion(vec, 2 * ticks, true));
+                    matrices.scale(0.7F, 0.7F, 0.7F);
                     MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
 
-                    RenderSystem.popMatrix();
+                    matrices.pop();
                 }
             } else {
                 renderQueue.add(new MixerRenderInstance(entity, renderX, renderY, renderZ));

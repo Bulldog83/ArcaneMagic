@@ -1,6 +1,5 @@
 package com.raphydaphy.arcanemagic.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.block.TransfigurationTableBlock;
 import com.raphydaphy.arcanemagic.block.entity.TransfigurationTableBlockEntity;
@@ -8,23 +7,31 @@ import com.raphydaphy.arcanemagic.util.RenderUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Quaternion;
 
 public class TransfigurationTableRenderer extends BlockEntityRenderer<TransfigurationTableBlockEntity> {
-    public void render(TransfigurationTableBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
-        super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
+    public TransfigurationTableRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+		super(blockEntityRenderDispatcher);
+	}
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(renderX, renderY, renderZ);
+	public void render(TransfigurationTableBlockEntity entity, float partialTicks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+		double renderX = dispatcher.camera.getPos().x;
+        double renderY = dispatcher.camera.getPos().y;
+        double renderZ = dispatcher.camera.getPos().z;		
+		
+        matrices.push();
+        matrices.translate(renderX, renderY, renderZ);
         RenderSystem.disableRescaleNormal();
-
 
         if (entity != null && entity.getWorld() != null) {
             BlockState state = entity.getWorld().getBlockState(entity.getPos());
-
 
             if (state.getBlock() instanceof TransfigurationTableBlock) {
                 RenderUtils.rotateTo(state.get(TransfigurationTableBlock.FACING));
@@ -35,27 +42,30 @@ public class TransfigurationTableRenderer extends BlockEntityRenderer<Transfigur
                         int row = slot % 3;
                         int col = slot / 3;
 
-                        RenderSystem.pushMatrix();
+                        matrices.push();
                         DiffuseLighting.enable();
-                        DiffuseLighting.enableGuiDepthLighting();
                         RenderSystem.enableLighting();
-                        RenderSystem.translated(.69 - .19 * row, 0.695, .69 - .19 * col);
-                        if (!MinecraftClient.getInstance().getItemRenderer().getModel(stack).hasDepthInGui()) {
-                            RenderSystem.translated(0, -0.064, 0);
-                            RenderSystem.rotatef(90, 1, 0, 0);
-                            RenderSystem.rotatef(180, 0, 1, 0);
+                        matrices.translate(.69 - .19 * row, 0.695, .69 - .19 * col);
+                        
+                        Vector3f vec_1 = new Vector3f(0F, 1F, 0F);
+            			vec_1.reciprocal();
+                        if (!MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(stack, entity.getWorld(), null).hasDepthInGui()) {
+                        	matrices.translate(0, -0.064, 0);
+                        	Vector3f vec_2 = new Vector3f(1F, 0F, 0F);
+                			vec_2.reciprocal();                
+                            matrices.multiply(new Quaternion(vec_2, 90, true));
+                            matrices.multiply(new Quaternion(vec_1, 180, true));
                         } else {
-                            RenderSystem.rotatef(-90, 0, 1, 0);
+                        	matrices.multiply(new Quaternion(vec_1, -90, true));
                         }
 
-                        RenderSystem.scaled(.14, .14, .14);
-                        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.NONE);
-                        RenderSystem.popMatrix();
+                        matrices.scale(.14F, .14F, .14F);
+                        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.NONE, light, overlay, matrices, vertexConsumers);
+                        matrices.pop();
                     }
                 }
             }
         }
-
-        RenderSystem.popMatrix();
+        matrices.pop();
     }
 }

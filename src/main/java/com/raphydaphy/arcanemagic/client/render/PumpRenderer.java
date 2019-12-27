@@ -1,7 +1,6 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.block.PumpBlock;
 import com.raphydaphy.arcanemagic.block.entity.PumpBlockEntity;
@@ -13,13 +12,20 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
 public class PumpRenderer extends BlockEntityRenderer<PumpBlockEntity> {
-    private static Identifier tex = new Identifier(ArcaneMagic.DOMAIN, "textures/block/pump.png");
+    public PumpRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+		super(blockEntityRenderDispatcher);
+	}
+
+	private static Identifier tex = new Identifier(ArcaneMagic.DOMAIN, "textures/block/pump.png");
 
     private static RenderUtils.TextureBounds[] top = {
             new UVSet(12, 0, 4, 4), // Bottom
@@ -29,9 +35,7 @@ public class PumpRenderer extends BlockEntityRenderer<PumpBlockEntity> {
             new UVSet(0, 14, 4, 2), // West
             new UVSet(0, 14, 4, 2)}; // East
 
-    public void render(PumpBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
-        super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
-
+    public void render(PumpBlockEntity entity, float partialTicks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (entity != null && !entity.isBottom() && entity.getWorld() != null) {
             BlockEntity bottom = entity.getWorld().getBlockEntity(entity.getPos().down());
             if (bottom instanceof PumpBlockEntity) {
@@ -40,9 +44,13 @@ public class PumpRenderer extends BlockEntityRenderer<PumpBlockEntity> {
 
                 BlockState state = entity.getWorld().getBlockState(entity.getPos());
 
-                if (state.getBlock() instanceof PumpBlock) {
-                    RenderSystem.pushMatrix();
-                    RenderSystem.translated(renderX, renderY, renderZ);
+                if (state.getBlock() instanceof PumpBlock) {                    
+                	double renderX = dispatcher.camera.getPos().x;
+                    double renderY = dispatcher.camera.getPos().y;
+                    double renderZ = dispatcher.camera.getPos().z;
+                	
+                    matrices.push();
+                    matrices.translate(renderX, renderY, renderZ);
                     MinecraftClient.getInstance().getTextureManager().bindTexture(tex);
                     RenderUtils.rotateTo(state.get(PumpBlock.FACING));
 
@@ -56,7 +64,7 @@ public class PumpRenderer extends BlockEntityRenderer<PumpBlockEntity> {
 
                     RenderUtils.renderCube(builder, 4, 4 + Math.sin((Math.PI / 180) * (ticks * 4)) * 1.9, 4, 8, 4, 8, top);
                     tess.draw();
-                    RenderSystem.popMatrix();
+                    matrices.pop();
                 }
             }
         }

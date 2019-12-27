@@ -1,7 +1,6 @@
 package com.raphydaphy.arcanemagic.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.ArcaneMagic;
 import com.raphydaphy.arcanemagic.block.PipeBlock;
 import com.raphydaphy.arcanemagic.block.entity.PipeBlockEntity;
@@ -10,14 +9,24 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
+
 import org.lwjgl.opengl.GL11;
 
 public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
-    private static Identifier tex = new Identifier(ArcaneMagic.DOMAIN, "textures/block/pipe.png");
+    public PipeRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+		super(blockEntityRenderDispatcher);
+	}
+
+	private static Identifier tex = new Identifier(ArcaneMagic.DOMAIN, "textures/block/pipe.png");
 
     private static RenderUtils.TextureBounds[] center = {
             new RenderUtils.TextureBounds(22, 4, 18, 0, 32, 32), // Bottom
@@ -59,13 +68,11 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
             new RenderUtils.TextureBounds(17, 32, 1, 28, 32, 32), // West
             new RenderUtils.TextureBounds(17, 32, 1, 28, 32, 32)}; // East
 
-    public void render(PipeBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
-        super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
-
-
+    public void render(PipeBlockEntity entity, float partialTicks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (entity != null) {
-            RenderSystem.pushMatrix();
-            MinecraftClient.getInstance().getTextureManager().bindTexture(tex);
+        	matrices.push();
+            
+        	MinecraftClient.getInstance().getTextureManager().bindTexture(tex);
             GlStateManager.disableCull();
             GlStateManager.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
             Tessellator tess = Tessellator.getInstance();
@@ -126,8 +133,12 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                 }
             }
 
+            double renderX = dispatcher.camera.getPos().x;
+            double renderY = dispatcher.camera.getPos().y;
+            double renderZ = dispatcher.camera.getPos().z;
+            
             double pixel = 1d / 16d;
-            RenderSystem.translated(renderX, renderY, renderZ);
+            matrices.translate(renderX, renderY, renderZ);
 
             if (connectionNorth.hasConnection() || connectionSouth.hasConnection() || renderCenter) {
                 builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
@@ -154,8 +165,10 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                 tess.draw();
             }
 
-            RenderSystem.rotatef(90.0F, 0.0F, 1.0F, 1.0F);
-            RenderSystem.translated(-1, 0, 0);
+            Vector3f vec_1 = new Vector3f(0.0F, 1.0F, 0.0F);
+			vec_1.reciprocal();                
+            matrices.multiply(new Quaternion(vec_1, 90.0F, true));
+            matrices.translate(-1, 0, 0);
 
             if (connectionEast.hasConnection() || connectionWest.hasConnection()) {
                 builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
@@ -182,8 +195,10 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                 tess.draw();
             }
 
-            RenderSystem.rotatef(90, 1, 0, 0);
-            RenderSystem.translated(0, 0, -1);
+            Vector3f vec_2 = new Vector3f(1.0F, 0.0F, 0.0F);
+			vec_2.reciprocal();                
+            matrices.multiply(new Quaternion(vec_2, 90.0F, true));
+            matrices.translate(0, 0, -1);
 
             if (connectionUp.hasConnection() || connectionDown.hasConnection()) {
                 builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
@@ -208,7 +223,7 @@ public class PipeRenderer extends BlockEntityRenderer<PipeBlockEntity> {
                     RenderUtils.renderBox(builder, pixel * 4, pixel * 4, pixel * 14, pixel * 12, pixel * 12, 1, bigConnector, new int[]{1, 1, 1, 1, 1, 1});
                 tess.draw();
             }
-            RenderSystem.popMatrix();
+            matrices.pop();
         }
     }
 }
