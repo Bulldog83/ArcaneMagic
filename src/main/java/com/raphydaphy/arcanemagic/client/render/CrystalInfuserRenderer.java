@@ -1,6 +1,5 @@
 package com.raphydaphy.arcanemagic.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.raphydaphy.arcanemagic.block.base.OrientableBlockBase;
 import com.raphydaphy.arcanemagic.block.entity.CrystalInfuserBlockEntity;
@@ -13,11 +12,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
 
 public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBlockEntity> {
     public CrystalInfuserRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
@@ -36,12 +37,22 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
             boolean active = entity.isActive() && craftingTime > 10;
 
             if (active && craftingTime > 8000 && craftingTime > 8150) {
-                //ParticleUtil.spawnGlowParticle(entity.getWorld(),entity.getPos().getX() + .5f, entity.getPos().getY() + 1.1f, entity.getPos().getZ() + .5f,0, 0, 0, 1, 1, 1, 0.1f, 0,0.5f, 100);
+                //ParticleUtil.spawnGlowParticle(entity.getWorld(),entity.getPos().x + .5f, entity.getPos().y + 1.1f, entity.getPos().z + .5f,0, 0, 0, 1, 1, 1, 0.1f, 0,0.5f, 100);
             } else {
+            	double renderX = dispatcher.camera.getPos().x;
+                double renderY = dispatcher.camera.getPos().y;
+                double renderZ = dispatcher.camera.getPos().z;
 
+                Vector3f vec_1 = new Vector3f(1F, 0F, 0F);
+                Vector3f vec_2 = new Vector3f(0F, 1F, 0F);
+                Vector3f vec_3 = new Vector3f(0F, 0F, 1F);
+                vec_1.reciprocal();
+            	vec_2.reciprocal();
+            	vec_3.reciprocal();
+                
+                
                 matrices.push();
                 DiffuseLighting.enable();
-                DiffuseLighting.enableGuiDepthLighting();
                 RenderSystem.enableLighting();
                 RenderSystem.disableRescaleNormal();
 
@@ -52,7 +63,7 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                     scale = scale - ((craftingTime - 7500) / 500f) * scale;
                 }
 
-                matrices.translate(0, 0, 0);
+                matrices.translate(renderX, renderY, renderZ);
                 if (!active) {
                     Direction dir = entity.getWorld().getBlockState(entity.getPos()).get(OrientableBlockBase.FACING);
                     RenderUtils.rotateTo(dir);
@@ -64,17 +75,16 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
 
                     if (active) {
                         matrices.translate(.5, 1 + Math.sin((Math.PI / 180) * (ticks * 4)) / 15, .5);
-                        RenderSystem.rotatef(2 * ticks, 0, 1, 0);
+                        matrices.multiply(new Quaternion(vec_2, 2 * ticks, true));
                     } else {
                         matrices.translate(.5, .635, .5);
-
-                        RenderSystem.rotatef(90, 1, 0, 0);
+                        matrices.multiply(new Quaternion(vec_1, 90, true));
                         if (equipment.getItem() instanceof ArmorItem && ((ArmorItem) equipment.getItem()).getSlotType() == EquipmentSlot.HEAD) {
                             matrices.translate(0, -0.07, 0);
                         }
                         matrices.translate(0, -.08, 0);
                     }
-                    RenderSystem.scaled(0.8, 0.8, 0.8);
+                    matrices.scale(0.8F, 0.8F, 0.8F);
                     MinecraftClient.getInstance().getItemRenderer().renderItem(equipment, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
 
                     matrices.pop();
@@ -97,32 +107,32 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                         float posY = (float) (1 - Math.sin((Math.PI / 180) * (ticks * 4)) / 8);
                         float posZ = (float) (.5 + Math.sin((Math.PI / 180) * (ticks * 2)) / inverseRadius);
                         matrices.translate(posX, posY, posZ);
-                        RenderSystem.rotatef(2 * ticks, 0, 1, 0);
+                        matrices.multiply(new Quaternion(vec_2, 2 * ticks, true));
                     } else {
                         matrices.translate(.35, .635, .3);
                         if (binder.getItem() == Items.LAPIS_LAZULI) {
-                            RenderSystem.rotatef(90, 1, 0, 0);
-                            RenderSystem.rotatef(90, 0, 0, 1);
+                        	matrices.multiply(new Quaternion(vec_1, 90, true));
+                        	matrices.multiply(new Quaternion(vec_3, 90, true));
                             if (!equipment.isEmpty()) {
-                                RenderSystem.rotatef(10, 1, 1, 0);
+                            	Vector3f vec = new Vector3f(1F, 1F, 0F);
+                            	vec.reciprocal();
+                            	matrices.multiply(new Quaternion(vec, 10, true));
                             }
                             matrices.translate(.07, -.1, 0);
                         } else if (binder.getItem() == Items.REDSTONE) {
-                            RenderSystem.rotatef(90, 1, 0, 0);
+                        	matrices.multiply(new Quaternion(vec_1, 90, true));
 
                             if (!equipment.isEmpty()) {
-                                RenderSystem.rotatef(-10, 1, 0, 0);
-                                RenderSystem.rotatef(10, 0, 1, 0);
+                            	matrices.multiply(new Quaternion(vec_1, -10, true));
+                            	matrices.multiply(new Quaternion(vec_2, 10, true));
                             }
 
                         }
                     }
 
-                    RenderSystem.scaled(scale, scale, scale);
+                    matrices.scale(scale, scale, scale);
                     MinecraftClient.getInstance().getItemRenderer().renderItem(binder, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
                     matrices.pop();
-
-
                 }
 
                 ticks += 90;
@@ -137,19 +147,21 @@ public class CrystalInfuserRenderer extends BlockEntityRenderer<CrystalInfuserBl
                         float posY = (float) (1 - Math.sin((Math.PI / 180) * ((ticks + 45) * 4)) / 8);
                         float posZ = (float) (0.5 + Math.sin((Math.PI / 180) * (ticks * 2)) / inverseRadius);
                         matrices.translate(posX, posY, posZ);
-                        RenderSystem.rotatef(2 * ticks, 0, 1, 0);
+                        matrices.multiply(new Quaternion(vec_2, 2 * ticks, true));
                     } else {
                         matrices.translate(.69, .635, .6);
-                        RenderSystem.rotatef(90, 1, 0, 0);
-                        RenderSystem.rotatef(50, 0, 0, 1);
+                        matrices.multiply(new Quaternion(vec_1, 90, true));
+                        matrices.multiply(new Quaternion(vec_3, 50, true));
 
                         if (!equipment.isEmpty()) {
                             matrices.translate(0, 0, -.01);
-                            RenderSystem.rotatef(10, 0, -1, 0);
+                            Vector3f vec = new Vector3f(1F, -1F, 0F);
+                        	vec.reciprocal();
+                        	matrices.multiply(new Quaternion(vec, 10, true));
                         }
                     }
 
-                    RenderSystem.scaled(scale, scale, scale);
+                    matrices.scale(scale, scale, scale);
                     MinecraftClient.getInstance().getItemRenderer().renderItem(crystal, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
                     matrices.pop();
                 }

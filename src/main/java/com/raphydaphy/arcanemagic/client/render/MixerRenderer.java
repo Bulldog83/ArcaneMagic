@@ -12,11 +12,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -29,7 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
-    private static RenderUtils.TextureBounds[] ring = {
+    
+	public MixerRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+		super(blockEntityRenderDispatcher);
+	}
+
+	private static RenderUtils.TextureBounds[] ring = {
             new UVSet(8, 0, 8, 8), // Bottom
             new UVSet(8, 0, 8, 8), // Top
             new UVSet(8, 8, 8, 2), // North
@@ -65,7 +72,7 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             GlStateManager.depthMask(false);
             GlStateManager.disableCull();
             GlStateManager.enableAlphaTest();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569F);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
 
             for (MixerRenderInstance instance : renderQueue) {
                 renderTank(instance.entity, instance.renderX, instance.renderY, instance.renderZ);
@@ -75,7 +82,7 @@ public class MixerRenderer extends BlockEntityRenderer<MixerBlockEntity> {
             GlStateManager.depthMask(true);
             GlStateManager.disableBlend();
             DiffuseLighting.disableGuiDepthLighting();
-DiffuseLighting.disable();
+            DiffuseLighting.disable();
 
             RenderSystem.popMatrix();
             renderQueue.clear();
@@ -130,9 +137,7 @@ DiffuseLighting.disable();
         RenderSystem.popMatrix();
     }
 
-    public void render(MixerBlockEntity entity, double renderX, double renderY, double renderZ, float partialTicks, int destroyStage) {
-        super.render(entity, renderX, renderY, renderZ, partialTicks, destroyStage);
-
+    public void render(MixerBlockEntity entity, float partialTicks, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (entity != null) {
             if (entity.isBottom()) {
                 renderRing(entity, renderX, renderY, renderZ);
@@ -148,7 +153,7 @@ DiffuseLighting.disable();
                     RenderSystem.translated(renderX + .5, renderY + 0.35 + Math.sin((Math.PI / 180) * (ticks * 4)) / 30, renderZ + .5);
                     RenderSystem.rotatef(2 * ticks, 0, 1, 0);
                     RenderSystem.scaled(0.7, 0.7, 0.7);
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND);
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, light, overlay, matrices, vertexConsumers);
 
                     RenderSystem.popMatrix();
                 }
