@@ -41,29 +41,29 @@ dependencies {
 	// Required Mods
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modCompile "io.github.prospector.silk:SilkAPI:${project.silk_version}"
-	modCompile curse.resolve("multiblock-api", "${project.multiblock_api_version}")
-	modCompile curse.resolve("crochet", "${project.crochet_version}")
-	modCompile curse.resolve("cutscene-api", "${project.cutscene_api_version}")
+	modCompile "curse.maven:multiblock-api:${project.multiblock_api_version}"
+	modCompile "curse.maven:crochet:${project.crochet_version}"
+	modCompile "curse.maven:cutscene-api:${project.cutscene_api_version}"
 
 	// Optional Libraries
 	compile "blue.endless:jankson:1.1.0"
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
 	// Optional Mods
-	modCompile curse.resolve("cloth-config", "${project.cloth_config_version}")
-	modCompile curse.resolve("cloth", "${project.cloth_version}")
+	modCompile "curse.maven:cloth-config:${project.cloth_config_version}"
+	modCompile "curse.maven:cloth:${project.cloth_version}"
 	modCompile "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modCompile "io.github.prospector:modmenu:${project.modmenu_version}"
-	modCompile curse.resolve("informed-load", "${project.informedload_version}")
-	modCompile curse.resolve("auto-config", "${project.autoconfig_version}")
+	modCompile "curse.maven:informed-load:${project.informedload_version}"
+	modCompile "curse.maven:auto-config:${project.autoconfig_version}"
 	//for testing if anything breaks with optifine, uncomment as necessary
-	//modCompile curse.resolve("optifabric", "${project.optifabric_version}")
+	//modCompile "curse.maven:optifabric", "${project.optifabric_version}")
 
 	// Nested Jars
 	include "io.github.prospector.silk:SilkAPI:${project.silk_version}"
-	include curse.resolve("multiblock-api", "${project.multiblock_api_version}")
-	include curse.resolve("crochet", "${project.crochet_version}")
-	include curse.resolve("cutscene-api", "${project.cutscene_api_version}")
+	include "curse.maven:multiblock-api:${project.multiblock_api_version}"
+	include "curse.maven:crochet:${project.crochet_version}"
+	include "curse.maven:cutscene-api:${project.cutscene_api_version}"
 }
 
 processResources {
