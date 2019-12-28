@@ -6,7 +6,7 @@ buildscript {
 		gradlePluginPortal()
 	}
 	dependencies {
-		classpath 'net.fabricmc:fabric-loom:0.2.5-SNAPSHOT'
+		classpath 'net.fabricmc:fabric-loom:0.2.7-SNAPSHOT'
 		classpath "com.wynprice.cursemaven:CurseMaven:2.1.1"
 	}
 }
