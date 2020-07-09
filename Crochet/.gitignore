@@ -19,10 +19,7 @@ classes/
 bin/
 .classpath
 .project
-*.launch
 
-# run directories
+# fabric
 
 run/
-run-server/
-*.launch
